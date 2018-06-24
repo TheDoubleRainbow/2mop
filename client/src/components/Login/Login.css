@@ -1,0 +1,38 @@
+.switchButton{
+	width: 100px;
+}
+
+.loginPage{
+	padding-top: 25px;
+}
+
+.loginButton{
+	margin: 0 auto;
+	width: 140px;
+}
+
+.loginButtonWrap{
+	padding-top: 10px;
+	text-align: center;
+}
+
+.loginButtonWrap .or {
+	margin: 5px 30px 0px 30px;
+	display: inline-block;
+}
+
+.typeQuestion{
+	text-align: center;
+	padding-bottom: 10px;
+}
+
+.formHeader{
+	text-align: center;
+	padding-bottom: 5px;
+	font-size: 30px;
+}
+
+.forgotButtonWrapper{
+	text-align: center;
+}
+
