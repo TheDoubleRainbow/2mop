@@ -4,7 +4,7 @@
     <nav class="navbar is-dark">
       <div class="navbar-brand">
         <span class="navbar-item" href="/">
-          test
+          MOP
         </span>
         <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
           <span></span>
@@ -14,8 +14,11 @@
         </div>
       <div class="navbar-menu">
         <div class="navbar-start">
-          <router-link to="/" class='navbar-item'>Home</router-link>
-          </div>
+          <router-link to="/" class='navbar-item'>Jobs</router-link>
+          <router-link to="/hackathons" class='navbar-item'>Hackathons</router-link>
+          <router-link to="/excursions" class='navbar-item'>Excursions</router-link>
+          <router-link to="/Profile" class='navbar-item'>Profile</router-link>
+        </div>
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="field is-grouped">
