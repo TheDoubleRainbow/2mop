@@ -15,12 +15,13 @@ const app = express();
 
 app.server = http.createServer(app);
 
+app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
+
 app.use(morgan('dev'));
 //app.use(cors({ exposedHeaders: config.corsHeaders }));
 app.use(bodyParser.json({ limit : config.bodyLimit }));
 
-app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
-console.log(path.join(__dirname, '..', 'client', 'dist'));
+console.log(path.join(__dirname, '..', 'client', 'dist', ''));
 
 initializeDb(() => {
 	app.use(passport.initialize());

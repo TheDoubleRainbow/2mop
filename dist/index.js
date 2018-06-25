@@ -53,12 +53,13 @@ var app = (0, _express2.default)();
 
 app.server = _http2.default.createServer(app);
 
+app.use(_express2.default.static(_path2.default.join(__dirname, '..', 'client', 'dist')));
+
 app.use((0, _morgan2.default)('dev'));
 //app.use(cors({ exposedHeaders: config.corsHeaders }));
 app.use(_bodyParser2.default.json({ limit: _config2.default.bodyLimit }));
 
-app.use(_express2.default.static(_path2.default.join(__dirname, '..', 'client', 'build')));
-console.log(_path2.default.join(__dirname, '..', 'client', 'dist'));
+console.log(_path2.default.join(__dirname, '..', 'client', 'dist', ''));
 
 (0, _db2.default)(function () {
 	app.use(_passport2.default.initialize());
