@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../lib/res-message.js"],"names":["resMessage","message"],"mappings":";;;;;AAAA,IAAMA,aAAa,SAAbA,UAAa;AAAA,SAAY;AAC7BC,aAASA;AADoB,GAAZ;AAAA,CAAnB;;kBAIeD,U","file":"res-message.js","sourcesContent":["const resMessage = message => ({\n  message: message,\n});\n\nexport default resMessage;\n"]}
