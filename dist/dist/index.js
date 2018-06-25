@@ -46,7 +46,9 @@ var _passport3 = require('./middleware/passport');
 
 var _passport4 = _interopRequireDefault(_passport3);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
 
 //import cors from 'cors';
 var app = (0, _express2.default)();
@@ -72,4 +74,5 @@ console.log(_path2.default.join(__dirname, '..', 'client', 'dist'));
 });
 
 exports.default = app;
+//# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map

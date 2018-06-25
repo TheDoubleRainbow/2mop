@@ -4,12 +4,15 @@ import bcrypt from 'bcrypt';
 const userSchema = new mongoose.Schema({
   name: {
     first: { type: String, required: true },
-    last: { type: String, required: true },
-    full: { type: String, required: true }
+    last: { type: String, required: true }
   },
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true, select: false },
   created_at: { type: Date, default: new Date() },
+  avatar: { type: String, default: "" },
+  birth_date: { type: Date, default: "" },
+  description: { type: String, default: ""},
+  phone_number: { type: String, default: ""}
 });
 
 userSchema.pre('save', function(next) {

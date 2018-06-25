@@ -12,7 +12,9 @@ var _bcrypt = require('bcrypt');
 
 var _bcrypt2 = _interopRequireDefault(_bcrypt);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
 var userSchema = new _mongoose2.default.Schema({
   name: {
@@ -23,9 +25,7 @@ var userSchema = new _mongoose2.default.Schema({
   password: { type: String, required: true, select: false },
   created_at: { type: Date, default: new Date() },
   avatar: { type: String, default: "" },
-  birth_date: { type: Date, default: "" },
-  description: { type: String, default: "" },
-  phone_number: { type: String, default: "" }
+  birth_date: { type: Date, default: "" }
 });
 
 userSchema.pre('save', function (next) {
@@ -61,4 +61,5 @@ userSchema.methods.comparePassword = function (pw, cb) {
 var userModel = _mongoose2.default.model('User', userSchema);
 
 exports.default = userModel;
+//# sourceMappingURL=user.js.map
 //# sourceMappingURL=user.js.map
