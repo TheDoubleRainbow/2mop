@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.userSchema = undefined;
 
 var _mongoose = require('mongoose');
 
@@ -15,11 +14,38 @@ var _bcrypt2 = _interopRequireDefault(_bcrypt);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var userSchema = exports.userSchema = new _mongoose2.default.Schema({
-  name: {
-    first: { type: String, required: true },
-    last: { type: String, required: true }
-  },
+// import mongoose from 'mongoose';
+// import UserModel, {userSchema} from '../models/user';
+// import bcrypt from 'bcrypt';
+
+
+// function extendSchema (Schema, definition, options) {
+//     return new mongoose.Schema(
+//       Object.assign({}, Schema.obj, definition),
+//       options
+//     );
+// }
+
+// const companySchema = extendSchema(userSchema, {
+//     name: {type: String, required: true}
+// });
+
+// // companySchema.methods.comparePassword = function(pw, cb) {
+// //     bcrypt.compare(pw, this.password, function(err, isMatch) {
+// //       if (err) {
+// //         return cb(err);
+// //       }
+
+// //       return cb(null, isMatch);
+// //     });
+// //   };
+
+// const companyModel = mongoose.model('Company', companySchema);
+
+// export default companyModel;
+
+var companySchema = new _mongoose2.default.Schema({
+  name: { type: String, required: true },
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true, select: false },
   created_at: { type: Date, default: new Date() },
@@ -32,18 +58,18 @@ var userSchema = exports.userSchema = new _mongoose2.default.Schema({
   type: { type: String, required: true }
 });
 
-userSchema.pre('save', function (next) {
-  var user = this;
+companySchema.pre('save', function (next) {
+  var company = this;
   if (this.isModified('password') || this.isNew) {
     _bcrypt2.default.genSalt(10, function (err, salt) {
       if (err) {
         return next(err);
       }
-      _bcrypt2.default.hash(user.password, salt, function (err, hash) {
+      _bcrypt2.default.hash(company.password, salt, function (err, hash) {
         if (err) {
           return next(err);
         }
-        user.password = hash;
+        company.password = hash;
         next();
       });
     });
@@ -52,7 +78,7 @@ userSchema.pre('save', function (next) {
   }
 });
 
-userSchema.methods.comparePassword = function (pw, cb) {
+companySchema.methods.comparePassword = function (pw, cb) {
   _bcrypt2.default.compare(pw, this.password, function (err, isMatch) {
     if (err) {
       return cb(err);
@@ -62,7 +88,7 @@ userSchema.methods.comparePassword = function (pw, cb) {
   });
 };
 
-var userModel = _mongoose2.default.model('User', userSchema);
+var companyModel = _mongoose2.default.model('Company', companySchema);
 
-exports.default = userModel;
-//# sourceMappingURL=user.js.map
+exports.default = companyModel;
+//# sourceMappingURL=company.js.map

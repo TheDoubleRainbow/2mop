@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
-const userSchema = new mongoose.Schema({
+export const userSchema = new mongoose.Schema({
   name: {
     first: { type: String, required: true },
     last: { type: String, required: true }
@@ -11,8 +11,11 @@ const userSchema = new mongoose.Schema({
   created_at: { type: Date, default: new Date() },
   avatar: { type: String, default: "" },
   birth_date: { type: Date, default: "" },
-  description: { type: String, default: ""},
-  phone_number: { type: String, default: ""}
+  description: { type: String, default: "" },
+  phone_number: { type: String, default: "" },
+  auth_tokens: { type: Array, default: [] },
+  refresh_tokens: { type: Array, default: [] },
+  type: { type: String, required: true },
 });
 
 userSchema.pre('save', function(next) {
