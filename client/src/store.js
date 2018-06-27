@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    auth: {},
+    auth: localStorage.auth ? JSON.parse(localStorage.auth) : {},
     authError: '',
     jobs: undefined
   },
@@ -18,7 +18,9 @@ export default new Vuex.Store({
         if(res.success == true){
           state.auth = res
           state.auth.logTime = new Date().getTime();
+          state.auth.expiresIn *= 1000;
           router.push('/')
+          localStorage.auth = JSON.stringify(state.auth);
         }else{
           state.authError = res.message
         }
@@ -32,7 +34,9 @@ export default new Vuex.Store({
         if(res.success == true){
           state.auth = res.data
           state.auth.logTime = new Date().getTime();
+          state.auth.expiresIn *= 1000;
           router.push('/')
+          localStorage.auth = JSON.stringify(state.auth);
         }else{
           state.authError = res.message
         }
@@ -47,8 +51,12 @@ export default new Vuex.Store({
       fetch('https://bokunozibra.herokuapp.com/api/token', {headers: {'token':'application/json'}, body: JSON.stringify({refreshToken: state.auth.refreshToken}), method: 'POST'}).then(res=>{
         return res.json()
       }).then(res => {
-        console.log(res)
-        router.push(from)
+        if(res.success){
+          router.push(from)
+        }else{
+          state.auth = {};
+          router.push('login')
+        }
       })
     },
     getJobs(state){

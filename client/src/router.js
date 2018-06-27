@@ -8,19 +8,21 @@ import store from './store';
 Vue.use(Router)
 
 const isAuth = function(to, from, next){
-  if((new Date()).getTime > store.state.auth.logTime +  store.state.auth.expiresIn){
-    if(store.state.auth.authToken){
+  console.log(store.state.auth.logTime, store.state.auth.expiresIn)
+  if(store.state.auth.authToken){
+    if((new Date()).getTime() < (store.state.auth.logTime + store.state.auth.expiresIn)){
       next()
       return
+    }else{
+      store.commit('refreshToken', to)
+      return
     }
-  }else{
-    store.commit('refreshToken', to)
   }
   next('/login')
 }
 
 const isNotAuth = function(to, from, next){
-  if((new Date()).getTime > store.state.auth.logTime +  store.state.auth.expiresIn){
+  if((new Date()).getTime() < (store.state.auth.logTime +  store.state.auth.expiresIn)){
     if(store.state.auth.authToken){
       next('/')
       return
