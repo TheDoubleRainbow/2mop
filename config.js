@@ -5,5 +5,7 @@ export default {
 	jwtSecret: 'MyS3cr3tK3Y',
 	port: 3000,
 	bodyLimit: '100kb',
-	corsHeaders: ['Link']
+	corsHeaders: ['Link'],
+	authTokenExpiresIn: 3600,
+	refreshTokenExpiresIn: 2592000,
 };

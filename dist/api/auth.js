@@ -18,6 +18,10 @@ var _user = require('../models/user');
 
 var _user2 = _interopRequireDefault(_user);
 
+var _company = require('../models/company');
+
+var _company2 = _interopRequireDefault(_company);
+
 var _config = require('../config');
 
 var _config2 = _interopRequireDefault(_config);
@@ -30,24 +34,62 @@ var authApi = (0, _resourceRouterMiddleware2.default)({
         email = _ref$body.email,
         password = _ref$body.password;
 
-    _user2.default.findOne({ email: email }).select("+password").then(function (result) {
-      if ((0, _fp.isEmpty)(result)) {
-        return res.status(401).send({
-          success: false,
+    var promiseArray = [];
+    promiseArray.push(new Promise(function (resolve, reject) {
+      _user2.default.findOne({ email: email }).select("+password").then(function (result) {
+        resolve(result);
+      });
+    }));
+    promiseArray.push(new Promise(function (resolve, reject) {
+      _company2.default.findOne({ email: email }).select("+password").then(function (result) {
+        resolve(result);
+      });
+    }));
+
+    //promiseArray.push(CompanyModel.findOne({ email }).select("+password"));
+    Promise.all(promiseArray).then(function (result) {
+      if ((0, _fp.isEmpty)(result[0]) && (0, _fp.isEmpty)(result[1])) {
+        return res.send({
+          status: 3,
           message: 'Authentication failed. User not found.'
         });
       }
+      if (!(0, _fp.isEmpty)(result[0])) {
+        result = result[0];
+      }
+
+      if (!(0, _fp.isEmpty)(result[1])) {
+        result = result[1];
+      }
+
+      var userType = result.type;
+
+      console.log('result ', result);
 
       result.comparePassword(password, function (err, isMatch) {
         if (isMatch && !err) {
-          var token = _jsonwebtoken2.default.sign({ sub: result._id }, _config2.default.jwtSecret, {
-            expiresIn: "2 days"
+          var authToken = "bearer " + _jsonwebtoken2.default.sign({ sub: result._id, type: 'auth', userType: userType }, _config2.default.jwtSecret, {
+            expiresIn: _config2.default.authTokenExpiresIn
           });
 
-          return res.json({
-            success: true,
-            message: 'Authentication successfull',
-            token: token
+          var refreshToken = _jsonwebtoken2.default.sign({ sub: result._id, type: 'refresh', userType: userType }, _config2.default.jwtSecret, {
+            expiresIn: _config2.default.refreshTokenExpiresIn
+          });
+
+          result.auth_tokens.push(authToken);
+          result.refresh_tokens.push(refreshToken);
+          return result.save(function (err) {
+            if (err) {
+              res.json({ success: false, message: err.toString });
+            } else {
+              res.json({
+                success: true,
+                message: 'Authentication successfull',
+                authToken: authToken,
+                expiresIn: _config2.default.authTokenExpiresIn,
+                refreshToken: refreshToken
+              });
+            }
           });
         }
 
@@ -59,7 +101,8 @@ var authApi = (0, _resourceRouterMiddleware2.default)({
     }).catch(function (err) {
       return res.send(err.toString());
     });
-  }
+  },
+  delete: function _delete() {}
 });
 
 exports.default = authApi;

@@ -21,8 +21,6 @@ app.use(morgan('dev'));
 //app.use(cors({ exposedHeaders: config.corsHeaders }));
 app.use(bodyParser.json({ limit : config.bodyLimit }));
 
-console.log(path.join(__dirname, '..', 'client', 'dist', ''));
-
 initializeDb(() => {
 	app.use(passport.initialize());
 	
