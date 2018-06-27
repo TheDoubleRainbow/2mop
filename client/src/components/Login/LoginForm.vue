@@ -22,6 +22,7 @@
                     </span>
                 </div>
             </div>
+            <div class="formError">{{errorText}}</div>
             <div class="loginButtonWrap">
                 <button class="loginButton button is-dark">Login</button>
 				<span class="or">OR</span>
@@ -45,6 +46,11 @@ export default {
               email: '',
               password: '',
           }
+      }
+  },
+  computed: {
+      errorText: function(){
+          return this.$store.state.authError
       }
   }
 }

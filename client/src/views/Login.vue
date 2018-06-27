@@ -47,6 +47,9 @@ export default {
     LoginForm,
     RegisterForm,
     RecoveryForm
+  },
+  beforeDestroy: function(){
+    this.$store.state.authError = '';
   }
 };
 </script>

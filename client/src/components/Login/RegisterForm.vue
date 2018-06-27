@@ -4,8 +4,8 @@
                 <div>
                     <div class="typeQuestion">Who are you?</div>
                     <div class="buttons has-addons is-centered">
-                        <span @click="data.userType = 1" class="switchButton button" v-bind:class="data.userType === 1 ? 'is-link' : ''">Student</span>
-                        <span @click="data.userType = 2" class="switchButton button" v-bind:class="data.userType === 2 ? 'is-link' : ''">Company</span>
+                        <span @click="data.type = 'user'" class="switchButton button" v-bind:class="data.type === 'user' ? 'is-link' : ''">Student</span>
+                        <span @click="data.type = 'company'" class="switchButton button" v-bind:class="data.type === 'company' ? 'is-link' : ''">Company</span>
                     </div>
                 </div>
         </div>
@@ -56,6 +56,7 @@
                 </div>
             </div>
             <div v-if="error.status" class="errorBlock">{{error.text}}</div>
+            <div class="formError">{{errorText}}</div>
             <div class="loginButtonWrap">
                 <button class="loginButton button is-dark">Register</button>
                 <span class="or">OR</span>
@@ -76,7 +77,7 @@ export default {
     data: function() {
         return {
             data: {
-                userType: 1,
+                type: 'user',
                 email: '',
                 password: '',
                 confirmPassword: '',
@@ -109,6 +110,11 @@ export default {
                 text: ''
             }
         }
+    },
+    computed: {
+      errorText: function(){
+          return this.$store.state.authError
+      }
     }
 }
 </script>
