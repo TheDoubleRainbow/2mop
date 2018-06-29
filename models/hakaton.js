@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate'
 
 const Schema = mongoose.Schema;
 
@@ -12,6 +13,8 @@ const hakatonSchema = new mongoose.Schema({
   date: { type: String, required: true},
   time: { type: String, default: ""},
 });
+
+hakatonSchema.plugin(mongoosePaginate);
 
 const hakatonModel = mongoose.model('Hakaton', hakatonSchema);
 

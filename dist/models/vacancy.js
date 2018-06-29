@@ -1,12 +1,16 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _mongoose = require("mongoose");
+var _mongoose = require('mongoose');
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _mongoosePaginate = require('mongoose-paginate');
+
+var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20,6 +24,8 @@ var vacancySchema = new _mongoose2.default.Schema({
   employerId: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
   requiredSkills: { type: [String], default: [] }
 });
+
+vacancyModel;
 
 var vacancyModel = _mongoose2.default.model('Vacancy', vacancySchema);
 

@@ -1,12 +1,16 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _mongoose = require("mongoose");
+var _mongoose = require('mongoose');
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _mongoosePaginate = require('mongoose-paginate');
+
+var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22,6 +26,8 @@ var hakatonSchema = new _mongoose2.default.Schema({
   date: { type: String, required: true },
   time: { type: String, default: "" }
 });
+
+hakatonSchema.plugin(_mongoosePaginate2.default);
 
 var hakatonModel = _mongoose2.default.model('Hakaton', hakatonSchema);
 

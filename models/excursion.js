@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate'
 
 const Schema = mongoose.Schema;
 
@@ -11,6 +12,8 @@ const excursionSchema = new mongoose.Schema({
   date: { type: String, required: true},
   time: { type: String, default: ""},
 });
+
+excursionSchema.plugin(mongoosePaginate);
 
 const excursionModel = mongoose.model('Excursion', excursionSchema);
 

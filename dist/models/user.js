@@ -26,14 +26,14 @@ var userSchema = exports.userSchema = new _mongoose2.default.Schema({
   },
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true, select: false },
-  created_at: { type: Date, default: new Date() },
+  createdAt: { type: Date, default: new Date() },
   avatar: { type: String, default: "" },
-  birth_date: { type: Date, default: "" },
+  birthDate: { type: Date, default: "" },
   description: { type: String, default: "" },
   skills: { type: [String], default: [] },
-  phone_number: { type: String, default: "" },
-  auth_tokens: { type: [String], default: [], select: false },
-  refresh_tokens: { type: [String], default: [], select: false }
+  phoneNumber: { type: String, default: "" },
+  authTokens: { type: [String], default: [], select: false },
+  refreshTokens: { type: [String], default: [], select: false }
   //  type: { type: String, required: true },
 });
 

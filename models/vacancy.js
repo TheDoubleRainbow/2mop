@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate';
 
 const Schema = mongoose.Schema;
 
@@ -10,6 +11,8 @@ const vacancySchema = new mongoose.Schema({
   employerId: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
   requiredSkills: { type: [String], default: []}
 });
+
+vacancyModel
 
 const vacancyModel = mongoose.model('Vacancy', vacancySchema);
 
