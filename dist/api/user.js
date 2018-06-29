@@ -20,18 +20,6 @@ var _user2 = _interopRequireDefault(_user);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var addFullNameToBody = function addFullNameToBody(body) {
-	if ((0, _fp.isEmpty)((0, _fp.get)('name', body))) {
-		return body;
-	}
-
-	return (0, _fp.merge)({
-		name: {
-			full: (0, _fp.get)('name.first', body) + ' ' + (0, _fp.get)('name.last', body)
-		}
-	}, body);
-};
-
 var userApi = (0, _resourceRouterMiddleware2.default)({
 	id: 'userId',
 
@@ -57,7 +45,7 @@ var userApi = (0, _resourceRouterMiddleware2.default)({
 		var userId = _ref3.params.userId,
 		    body = _ref3.body;
 
-		_user2.default.findByIdAndUpdate(userId, addFullNameToBody(body)).then(function () {
+		_user2.default.findByIdAndUpdate(userId, body).then(function () {
 			return _user2.default.findById(userId).then(function (result) {
 				return res.send(result);
 			});

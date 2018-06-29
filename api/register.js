@@ -17,12 +17,14 @@ const userApi = resource({
 		console.log(CompanyModel.schema);
 		let user = null;
 
+		const userData = body.userData;
+
 		switch(body.type){
 			case 'user': 
-				user = new UserModel(body);
+				user = new UserModel({name: userData.name, email: userData.email, password: userData.password, avatar: userData.avatar, phone_number: userData.phoneNumber});
 				break;
 			case 'company':
-				user = new CompanyModel(body);
+				user = new CompanyModel({name: userData.name, email: userData.email, password: userData.password, avatar: userData.avatar, phone_number: userData.phoneNumber, location: userData.location});
 				break;
 			default:
 				res.json({

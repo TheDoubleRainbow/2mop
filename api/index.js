@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { version } from '../../package.json';
 import requireAuth from '../middleware/require-auth';
 import authApi from './auth';
+import logoutApi from './logout';
 import userApi from './user';
 import tokenApi from './token';
 import registerApi from './register';
@@ -9,6 +10,7 @@ import registerApi from './register';
 const api = Router();
 
 api.use('/auth', authApi);
+api.use('/logout', logoutApi);
 api.use('/user', requireAuth, userApi);
 api.use('/register', registerApi);
 api.use('/token', tokenApi);

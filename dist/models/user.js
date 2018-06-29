@@ -26,10 +26,11 @@ var userSchema = exports.userSchema = new _mongoose2.default.Schema({
   avatar: { type: String, default: "" },
   birth_date: { type: Date, default: "" },
   description: { type: String, default: "" },
+  skills: { type: Array, default: [] },
   phone_number: { type: String, default: "" },
   auth_tokens: { type: Array, default: [] },
-  refresh_tokens: { type: Array, default: [] },
-  type: { type: String, required: true }
+  refresh_tokens: { type: Array, default: [] }
+  //  type: { type: String, required: true },
 });
 
 userSchema.pre('save', function (next) {

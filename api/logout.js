@@ -1,6 +1,7 @@
 import resource from 'resource-router-middleware';
 import jwt from 'jsonwebtoken';
 import UserModel from '../models/user';
+import CompanyModel from '../models/company';
 import config from '../config';
 
 const logoutApi = resource({
@@ -8,7 +9,19 @@ const logoutApi = resource({
         const refreshToken = body.refreshToken || "";
         jwt.verify(refreshToken, config.jwtSecret, (err, decoded) => {
             if(!err && decoded.type == "refresh"){
-                UserModel.findById(decoded.sub).then(user => {
+
+                let Model = null;
+
+                switch(decoded.userType){
+                    case 'user': 
+                      Model =  UserModel;
+                      break;
+                    case 'company':
+                      Model = CompanyModel;
+                      break;
+                }
+
+                Model.findById(decoded.sub).then(user => {
                     if (user) {
                         user.refresh_tokens = user.refresh_tokens.filter(e => e !== refreshToken);
 
@@ -24,10 +37,16 @@ const logoutApi = resource({
                         .catch(error => res.json({
                             status: -1,
                             message: 'Logout failture',
-                            devMessage: resMessage(error.message)
+                            devMessage: error.message
                         }))
                     }
-                });
+                }).catch( (error) => {
+                    res.json({
+                        status: -1,
+                        message: "",
+                        devMessage: error,
+                    });
+                })
             } else {
                 res.status(400).json({
                     succsess: false,

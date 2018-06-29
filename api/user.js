@@ -3,18 +3,6 @@ import { merge, get, isEmpty } from 'lodash/fp';
 import resMessage from '../lib/res-message';
 import UserModel from '../models/user';
 
-const addFullNameToBody = body => {
-	if (isEmpty(get('name', body))) {
-		return body;
-	}
-
-	return merge({
-		name: {
-			full: `${get('name.first', body)} ${get('name.last', body)}`
-		},
-	}, body);
-};
-
 const userApi = resource({
 	id: 'userId',
 
@@ -31,7 +19,7 @@ const userApi = resource({
 	},
 
 	update({ params: { userId }, body }, res) {
-		UserModel.findByIdAndUpdate(userId, addFullNameToBody(body))
+		UserModel.findByIdAndUpdate(userId, body)
 			.then(() => UserModel.findById(userId).then(result => res.send(result)))
 			.catch(() => res.status(404).send(resMessage('User not found.')))
 	},

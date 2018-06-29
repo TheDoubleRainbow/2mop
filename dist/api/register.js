@@ -44,12 +44,14 @@ var userApi = (0, _resourceRouterMiddleware2.default)({
 		console.log(_company2.default.schema);
 		var user = null;
 
+		var userData = body.userData;
+
 		switch (body.type) {
 			case 'user':
-				user = new _user2.default(body);
+				user = new _user2.default({ name: userData.name, email: userData.email, password: userData.password, avatar: userData.avatar, phone_number: userData.phoneNumber });
 				break;
 			case 'company':
-				user = new _company2.default(body);
+				user = new _company2.default({ name: userData.name, email: userData.email, password: userData.password, avatar: userData.avatar, phone_number: userData.phoneNumber, location: userData.location });
 				break;
 			default:
 				res.json({
