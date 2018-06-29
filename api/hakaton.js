@@ -1,15 +1,15 @@
-import VacancyModel from '../models/vacancy';
+import HakatonModel from '../models/hakaton';
 import requireAuth from '../middleware/require-auth';
 import express from 'express';
-import vacancyModel from '../models/vacancy';
+import hakatonModel from '../models/hakaton';
 const router = express.Router();
 
 router.get('/', ({query}, res) => {
-	//VacancyModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
+	//HakatonModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
 	const page = parseInt(query.page || 0);
     const perPage = parseInt(query.perPage || 20);
-    const employer = query.employer; 
-	VacancyModel.paginate(employer ? {employer} : {}, {offset: page * perPage , limit: perPage})
+    const organizer = query.organizer; 
+	HakatonModel.paginate(organizer ? {organizer} : {}, {offset: page * perPage , limit: perPage})
 		.then(result => res.json({
 			status: 0,
 			message: "",
@@ -28,8 +28,8 @@ router.get('/', ({query}, res) => {
 		}))
 });
 
-router.get('/:vacancyId', ({ params: { vacancyId } }, res) => {
-	VacancyModel.findById(vacancyId)
+router.get('/:hakatonId', ({ params: { hakatonId } }, res) => {
+	HakatonModel.findById(hakatonId)
 		.then(result => res.json({
 			status: 0,
 			message: "",
@@ -39,19 +39,19 @@ router.get('/:vacancyId', ({ params: { vacancyId } }, res) => {
 		.catch(error => res.json({
 			status: -1,
 			message: "",
-			devMessage: "Vacancy not found",
+			devMessage: "Hakaton not found",
 		}))
 });
 
 router.post('/', requireAuth, ({body, user}, res) => {
 	if(user.type == "company"){
-		const vacancy = new vacancyModel({name: body.name, avatar: body.avatar, description: body.description, employerId: user._id, requiredSkills: body.requiredSkills});
-		vacancy.save()			
+		const hakaton = new hakatonModel({name: body.name, avatar: body.avatar, description: body.description, organizerId: user._id, requiredSkills: body.requiredSkills});
+		hakaton.save()			
 			.then( () => {
 				res.json({
 					status: 0,
-					message: 'Vacancy successfull created',
-					data: vacancy,
+					message: 'Hakaton successfull created',
+					data: hakaton,
 				})
 			})
 			.catch(error => {
@@ -71,10 +71,10 @@ router.post('/', requireAuth, ({body, user}, res) => {
 	}
 });
 
-router.put('/:vacancyId', requireAuth, ({ params: { vacancyId }, body, user }, res) => {
+router.put('/:hakatonId', requireAuth, ({ params: { hakatonId }, body, user }, res) => {
 	// let updates = {name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper};
 	// let update = {name: body.name};
-	VacancyModel.findOneAndUpdate({_id: vacancyId, employerId: user._id}, body, {new: true}).then( doc => {
+	HakatonModel.findOneAndUpdate({_id: hakatonId, organizerId: user._id}, body, {new: true}).then( doc => {
 		res.json({
 			status: 0,
 			message: "",
@@ -90,14 +90,14 @@ router.put('/:vacancyId', requireAuth, ({ params: { vacancyId }, body, user }, r
 	});
 })
 
-router.delete('/:vacancyId', requireAuth, ({ params: { vacancyId }, user }, res) => {
-//	if(vacancyId == vacancy._id){
-		//VacancyModel.findByIdAndRemove(vacancyId)
-		VacancyModel.findOneAndRemove({_id: vacancyId, employerId: user._id})
+router.delete('/:hakatonId', requireAuth, ({ params: { hakatonId }, user }, res) => {
+//	if(hakatonId == hakaton._id){
+		//HakatonModel.findByIdAndRemove(hakatonId)
+		HakatonModel.findOneAndRemove({_id: hakatonId, organizerId: user._id})
 			.then(() => res.json({
 				status: 0,
 				message: "",
-				devMessage: "Vacancy successfuly deleted",
+				devMessage: "Hakaton successfuly deleted",
 			}))
 			.catch((err) => res.json({
 				status: -1,

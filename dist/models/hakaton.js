@@ -25,6 +25,8 @@ var hakatonSchema = new _mongoose2.default.Schema({
   location: { type: String, required: true },
   date: { type: String, required: true },
   time: { type: String, default: "" }
+}, {
+  versionKey: false
 });
 
 hakatonSchema.plugin(_mongoosePaginate2.default);

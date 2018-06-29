@@ -31,6 +31,8 @@ var companySchema = new _mongoose2.default.Schema({
   authTokens: { type: [String], default: [], select: false },
   refreshTokens: { type: [String], default: [], select: false }
   //type: { type: String, required: true },
+}, {
+  versionKey: false
 });
 
 companySchema.plugin(_mongoosePaginate2.default);

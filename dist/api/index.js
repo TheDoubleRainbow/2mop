@@ -36,6 +36,14 @@ var _vacancy = require('./vacancy');
 
 var _vacancy2 = _interopRequireDefault(_vacancy);
 
+var _excursion = require('./excursion');
+
+var _excursion2 = _interopRequireDefault(_excursion);
+
+var _hakaton = require('./hakaton');
+
+var _hakaton2 = _interopRequireDefault(_hakaton);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //import cors from 'cors';
@@ -52,6 +60,8 @@ api.use('/register', _register2.default);
 api.use('/token', _token2.default);
 
 api.use('/vacancy', _vacancy2.default);
+api.use('/excursion', _excursion2.default);
+api.use('/hakaton', _hakaton2.default);
 
 api.get('/', function (req, res) {
 	res.json({ version: _package.version });

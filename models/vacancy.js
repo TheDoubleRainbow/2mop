@@ -10,9 +10,11 @@ const vacancySchema = new mongoose.Schema({
   description: { type: String, default: "" },
   employerId: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
   requiredSkills: { type: [String], default: []}
+}, {
+  versionKey: false
 });
 
-vacancyModel
+vacancySchema.plugin(mongoosePaginate);
 
 const vacancyModel = mongoose.model('Vacancy', vacancySchema);
 

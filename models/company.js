@@ -11,10 +11,12 @@ const companySchema = new mongoose.Schema({
   description: { type: String, default: "" },
   phoneNumber: { type: String, default: "" },
   webSite: { type: String, default: ""},
-  location: { type: String, required: true},
+  location: { type: String, required: true },
   authTokens: { type: [String], default: [], select: false },
   refreshTokens: { type: [String], default: [], select: false },
   //type: { type: String, required: true },
+}, {
+  versionKey: false
 });
 
 companySchema.plugin(mongoosePaginate);

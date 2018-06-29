@@ -6,6 +6,7 @@ export default {
 	port: 3000,
 	bodyLimit: '100kb',
 	corsHeaders: ['Link'],
-	authTokenExpiresIn: 3600,
+	//authTokenExpiresIn: 3600,
+	authTokenExpiresIn: 360000,
 	refreshTokenExpiresIn: 2592000,
 };

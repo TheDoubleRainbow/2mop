@@ -11,6 +11,8 @@ const excursionSchema = new mongoose.Schema({
   organizerId: { type: Schema.Types.ObjectId, ref: 'Company', required: true  },
   date: { type: String, required: true},
   time: { type: String, default: ""},
+}, {
+  versionKey: false 
 });
 
 excursionSchema.plugin(mongoosePaginate);

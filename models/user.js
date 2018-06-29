@@ -18,6 +18,8 @@ export const userSchema = new mongoose.Schema({
   authTokens: { type: [String], default: [], select: false},
   refreshTokens: { type: [String], default: [], select: false},
 //  type: { type: String, required: true },
+}, {
+  versionKey: false 
 });
 
 userSchema.plugin(mongoosePaginate);

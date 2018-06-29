@@ -8,10 +8,6 @@ var _resourceRouterMiddleware = require('resource-router-middleware');
 
 var _resourceRouterMiddleware2 = _interopRequireDefault(_resourceRouterMiddleware);
 
-var _resMessage = require('../lib/res-message');
-
-var _resMessage2 = _interopRequireDefault(_resMessage);
-
 var _user = require('../models/user');
 
 var _user2 = _interopRequireDefault(_user);
@@ -90,7 +86,7 @@ var userApi = (0, _resourceRouterMiddleware2.default)({
 				status: error.code || -1,
 				message: message,
 				//devMessage: resMessage(error.message)
-				devMessage: error.message
+				devMessage: error
 			});
 		});
 	}

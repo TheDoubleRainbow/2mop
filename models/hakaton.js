@@ -12,6 +12,8 @@ const hakatonSchema = new mongoose.Schema({
   location: { type: String, required: true},
   date: { type: String, required: true},
   time: { type: String, default: ""},
+}, {
+  versionKey: false
 });
 
 hakatonSchema.plugin(mongoosePaginate);

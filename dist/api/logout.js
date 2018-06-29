@@ -48,12 +48,12 @@ var logoutApi = (0, _resourceRouterMiddleware2.default)({
 
                 Model.findById(decoded.sub).then(function (user) {
                     if (user) {
-                        user.refresh_tokens = user.refresh_tokens.filter(function (e) {
+                        user.refreshTokens = user.refreshTokens.filter(function (e) {
                             return e !== refreshToken;
                         });
 
                         if (headers && headers['authorization']) {
-                            user.auth_tokens = user.auth_tokens.filter(function (e) {
+                            user.authTokens = user.authTokens.filter(function (e) {
                                 return e !== headers['authorization'];
                             });
                         }

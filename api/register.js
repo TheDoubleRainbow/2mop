@@ -1,5 +1,4 @@
 import resource from 'resource-router-middleware';
-import resMessage from '../lib/res-message';
 import UserModel from '../models/user';
 import CompanyModel from '../models/company';
 import jwt from 'jsonwebtoken';
@@ -65,7 +64,7 @@ const userApi = resource({
 					status: error.code || -1,
 					message,
 					//devMessage: resMessage(error.message)
-					devMessage: error.message,
+					devMessage: error,
 				})
 			})
 	},

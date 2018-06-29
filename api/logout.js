@@ -23,10 +23,10 @@ const logoutApi = resource({
 
                 Model.findById(decoded.sub).then(user => {
                     if (user) {
-                        user.refresh_tokens = user.refresh_tokens.filter(e => e !== refreshToken);
+                        user.refreshTokens = user.refreshTokens.filter(e => e !== refreshToken);
 
                         if( headers && headers['authorization']){
-                            user.auth_tokens = user.auth_tokens.filter(e => e !== headers['authorization']);
+                            user.authTokens = user.authTokens.filter(e => e !== headers['authorization']);
                         }
                         user.save()
                         .then(

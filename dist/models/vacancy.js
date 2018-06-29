@@ -23,9 +23,11 @@ var vacancySchema = new _mongoose2.default.Schema({
   description: { type: String, default: "" },
   employerId: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
   requiredSkills: { type: [String], default: [] }
+}, {
+  versionKey: false
 });
 
-vacancyModel;
+vacancySchema.plugin(_mongoosePaginate2.default);
 
 var vacancyModel = _mongoose2.default.model('Vacancy', vacancySchema);
 

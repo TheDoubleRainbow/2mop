@@ -1,15 +1,15 @@
-import VacancyModel from '../models/vacancy';
+import ExcursionModel from '../models/excursion';
 import requireAuth from '../middleware/require-auth';
 import express from 'express';
-import vacancyModel from '../models/vacancy';
+import excursionModel from '../models/excursion';
 const router = express.Router();
 
 router.get('/', ({query}, res) => {
-	//VacancyModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
+	//ExcursionModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
 	const page = parseInt(query.page || 0);
     const perPage = parseInt(query.perPage || 20);
-    const employer = query.employer; 
-	VacancyModel.paginate(employer ? {employer} : {}, {offset: page * perPage , limit: perPage})
+    const organizer = query.organizer; 
+	ExcursionModel.paginate(organizer ? {organizer} : {}, {offset: page * perPage , limit: perPage})
 		.then(result => res.json({
 			status: 0,
 			message: "",
@@ -28,8 +28,8 @@ router.get('/', ({query}, res) => {
 		}))
 });
 
-router.get('/:vacancyId', ({ params: { vacancyId } }, res) => {
-	VacancyModel.findById(vacancyId)
+router.get('/:excursionId', ({ params: { excursionId } }, res) => {
+	ExcursionModel.findById(excursionId)
 		.then(result => res.json({
 			status: 0,
 			message: "",
@@ -39,19 +39,19 @@ router.get('/:vacancyId', ({ params: { vacancyId } }, res) => {
 		.catch(error => res.json({
 			status: -1,
 			message: "",
-			devMessage: "Vacancy not found",
+			devMessage: "Excursion not found",
 		}))
 });
 
 router.post('/', requireAuth, ({body, user}, res) => {
 	if(user.type == "company"){
-		const vacancy = new vacancyModel({name: body.name, avatar: body.avatar, description: body.description, employerId: user._id, requiredSkills: body.requiredSkills});
-		vacancy.save()			
+		const excursion = new excursionModel({name: body.name, avatar: body.avatar, description: body.description, organizerId: user._id, requiredSkills: body.requiredSkills});
+		excursion.save()			
 			.then( () => {
 				res.json({
 					status: 0,
-					message: 'Vacancy successfull created',
-					data: vacancy,
+					message: 'Excursion successfull created',
+					data: excursion,
 				})
 			})
 			.catch(error => {
@@ -59,7 +59,7 @@ router.post('/', requireAuth, ({body, user}, res) => {
 					status: error.code || -1,
 					message: "",
 					//devMessage: resMessage(error.message)
-					devMessage: error.message,
+					devMessage: error,
 				})
 			})
 	} else {
@@ -71,10 +71,10 @@ router.post('/', requireAuth, ({body, user}, res) => {
 	}
 });
 
-router.put('/:vacancyId', requireAuth, ({ params: { vacancyId }, body, user }, res) => {
+router.put('/:excursionId', requireAuth, ({ params: { excursionId }, body, user }, res) => {
 	// let updates = {name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper};
 	// let update = {name: body.name};
-	VacancyModel.findOneAndUpdate({_id: vacancyId, employerId: user._id}, body, {new: true}).then( doc => {
+	ExcursionModel.findOneAndUpdate({_id: excursionId, organizerId: user._id}, body, {new: true}).then( doc => {
 		res.json({
 			status: 0,
 			message: "",
@@ -90,14 +90,14 @@ router.put('/:vacancyId', requireAuth, ({ params: { vacancyId }, body, user }, r
 	});
 })
 
-router.delete('/:vacancyId', requireAuth, ({ params: { vacancyId }, user }, res) => {
-//	if(vacancyId == vacancy._id){
-		//VacancyModel.findByIdAndRemove(vacancyId)
-		VacancyModel.findOneAndRemove({_id: vacancyId, employerId: user._id})
+router.delete('/:excursionId', requireAuth, ({ params: { excursionId }, user }, res) => {
+//	if(excursionId == excursion._id){
+		//ExcursionModel.findByIdAndRemove(excursionId)
+		ExcursionModel.findOneAndRemove({_id: excursionId, organizerId: user._id})
 			.then(() => res.json({
 				status: 0,
 				message: "",
-				devMessage: "Vacancy successfuly deleted",
+				devMessage: "Excursion successfuly deleted",
 			}))
 			.catch((err) => res.json({
 				status: -1,

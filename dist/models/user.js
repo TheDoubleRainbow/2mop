@@ -35,6 +35,8 @@ var userSchema = exports.userSchema = new _mongoose2.default.Schema({
   authTokens: { type: [String], default: [], select: false },
   refreshTokens: { type: [String], default: [], select: false }
   //  type: { type: String, required: true },
+}, {
+  versionKey: false
 });
 
 userSchema.plugin(_mongoosePaginate2.default);

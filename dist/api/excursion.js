@@ -4,9 +4,9 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _vacancy = require('../models/vacancy');
+var _excursion = require('../models/excursion');
 
-var _vacancy2 = _interopRequireDefault(_vacancy);
+var _excursion2 = _interopRequireDefault(_excursion);
 
 var _requireAuth = require('../middleware/require-auth');
 
@@ -23,11 +23,11 @@ var router = _express2.default.Router();
 router.get('/', function (_ref, res) {
 	var query = _ref.query;
 
-	//VacancyModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
+	//ExcursionModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
 	var page = parseInt(query.page || 0);
 	var perPage = parseInt(query.perPage || 20);
-	var employer = query.employer;
-	_vacancy2.default.paginate(employer ? { employer: employer } : {}, { offset: page * perPage, limit: perPage }).then(function (result) {
+	var organizer = query.organizer;
+	_excursion2.default.paginate(organizer ? { organizer: organizer } : {}, { offset: page * perPage, limit: perPage }).then(function (result) {
 		return res.json({
 			status: 0,
 			message: "",
@@ -48,10 +48,10 @@ router.get('/', function (_ref, res) {
 	});
 });
 
-router.get('/:vacancyId', function (_ref2, res) {
-	var vacancyId = _ref2.params.vacancyId;
+router.get('/:excursionId', function (_ref2, res) {
+	var excursionId = _ref2.params.excursionId;
 
-	_vacancy2.default.findById(vacancyId).then(function (result) {
+	_excursion2.default.findById(excursionId).then(function (result) {
 		return res.json({
 			status: 0,
 			message: "",
@@ -62,7 +62,7 @@ router.get('/:vacancyId', function (_ref2, res) {
 		return res.json({
 			status: -1,
 			message: "",
-			devMessage: "Vacancy not found"
+			devMessage: "Excursion not found"
 		});
 	});
 });
@@ -72,19 +72,19 @@ router.post('/', _requireAuth2.default, function (_ref3, res) {
 	    user = _ref3.user;
 
 	if (user.type == "company") {
-		var vacancy = new _vacancy2.default({ name: body.name, avatar: body.avatar, description: body.description, employerId: user._id, requiredSkills: body.requiredSkills });
-		vacancy.save().then(function () {
+		var excursion = new _excursion2.default({ name: body.name, avatar: body.avatar, description: body.description, organizerId: user._id, requiredSkills: body.requiredSkills });
+		excursion.save().then(function () {
 			res.json({
 				status: 0,
-				message: 'Vacancy successfull created',
-				data: vacancy
+				message: 'Excursion successfull created',
+				data: excursion
 			});
 		}).catch(function (error) {
 			res.json({
 				status: error.code || -1,
 				message: "",
 				//devMessage: resMessage(error.message)
-				devMessage: error.message
+				devMessage: error
 			});
 		});
 	} else {
@@ -96,14 +96,14 @@ router.post('/', _requireAuth2.default, function (_ref3, res) {
 	}
 });
 
-router.put('/:vacancyId', _requireAuth2.default, function (_ref4, res) {
-	var vacancyId = _ref4.params.vacancyId,
+router.put('/:excursionId', _requireAuth2.default, function (_ref4, res) {
+	var excursionId = _ref4.params.excursionId,
 	    body = _ref4.body,
 	    user = _ref4.user;
 
 	// let updates = {name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper};
 	// let update = {name: body.name};
-	_vacancy2.default.findOneAndUpdate({ _id: vacancyId, employerId: user._id }, body, { new: true }).then(function (doc) {
+	_excursion2.default.findOneAndUpdate({ _id: excursionId, organizerId: user._id }, body, { new: true }).then(function (doc) {
 		res.json({
 			status: 0,
 			message: "",
@@ -119,17 +119,17 @@ router.put('/:vacancyId', _requireAuth2.default, function (_ref4, res) {
 	});
 });
 
-router.delete('/:vacancyId', _requireAuth2.default, function (_ref5, res) {
-	var vacancyId = _ref5.params.vacancyId,
+router.delete('/:excursionId', _requireAuth2.default, function (_ref5, res) {
+	var excursionId = _ref5.params.excursionId,
 	    user = _ref5.user;
 
-	//	if(vacancyId == vacancy._id){
-	//VacancyModel.findByIdAndRemove(vacancyId)
-	_vacancy2.default.findOneAndRemove({ _id: vacancyId, employerId: user._id }).then(function () {
+	//	if(excursionId == excursion._id){
+	//ExcursionModel.findByIdAndRemove(excursionId)
+	_excursion2.default.findOneAndRemove({ _id: excursionId, organizerId: user._id }).then(function () {
 		return res.json({
 			status: 0,
 			message: "",
-			devMessage: "Vacancy successfuly deleted"
+			devMessage: "Excursion successfuly deleted"
 		});
 	}).catch(function (err) {
 		return res.json({
@@ -148,4 +148,4 @@ router.delete('/:vacancyId', _requireAuth2.default, function (_ref5, res) {
 });
 
 exports.default = router;
-//# sourceMappingURL=vacancy.js.map
+//# sourceMappingURL=excursion.js.map
