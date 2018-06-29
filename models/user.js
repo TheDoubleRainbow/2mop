@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import mongoosePaginate from 'mongoose-paginate'
 
 export const userSchema = new mongoose.Schema({
   name: {
@@ -12,12 +13,14 @@ export const userSchema = new mongoose.Schema({
   avatar: { type: String, default: "" },
   birth_date: { type: Date, default: "" },
   description: { type: String, default: "" },
-  skills: { type: Array, default: [] },
+  skills: { type: [String], default: [] },
   phone_number: { type: String, default: "" },
-  auth_tokens: { type: Array, default: [] },
-  refresh_tokens: { type: Array, default: [] },
+  auth_tokens: { type: [String], default: [], select: false},
+  refresh_tokens: { type: [String], default: [], select: false},
 //  type: { type: String, required: true },
 });
+
+userSchema.plugin(mongoosePaginate);
 
 userSchema.pre('save', function(next) {
   var user = this;

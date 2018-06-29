@@ -69,14 +69,15 @@ var userApi = (0, _resourceRouterMiddleware2.default)({
 			expiresIn: _config2.default.refreshTokenExpiresIn
 		});
 
-		user.auth_tokens.push(authToken);
-		user.refresh_tokens.push(refreshToken);
+		user.authTokens.push(authToken);
+		user.refreshTokens.push(refreshToken);
 
 		user.save().then(function () {
 			res.json({
 				status: 0,
 				message: 'Registration successfull',
 				data: {
+					userType: body.type,
 					authToken: authToken,
 					expiresIn: _config2.default.authTokenExpiresIn,
 					refreshToken: refreshToken

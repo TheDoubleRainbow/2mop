@@ -36,12 +36,12 @@ var authApi = (0, _resourceRouterMiddleware2.default)({
 
     var promiseArray = [];
     promiseArray.push(new Promise(function (resolve, reject) {
-      _user2.default.findOne({ email: email }).select("+password").then(function (result) {
+      _user2.default.findOne({ email: email }).select({ password: 1, authTokens: 1, refreshTokens: 1 }).then(function (result) {
         resolve(result);
       });
     }));
     promiseArray.push(new Promise(function (resolve, reject) {
-      _company2.default.findOne({ email: email }).select("+password").then(function (result) {
+      _company2.default.findOne({ email: email }).select({ password: 1, authTokens: 1, refreshTokens: 1 }).then(function (result) {
         resolve(result);
       });
     }));
@@ -54,15 +54,18 @@ var authApi = (0, _resourceRouterMiddleware2.default)({
           message: 'Authentication failed. User not found.'
         });
       }
+
+      var userType = "";
+
       if (!(0, _fp.isEmpty)(result[0])) {
         result = result[0];
+        userType = "user";
       }
 
       if (!(0, _fp.isEmpty)(result[1])) {
         result = result[1];
+        userType = "company";
       }
-
-      var userType = result.type;
 
       console.log('result ', result);
 
@@ -76,8 +79,8 @@ var authApi = (0, _resourceRouterMiddleware2.default)({
             expiresIn: _config2.default.refreshTokenExpiresIn
           });
 
-          result.auth_tokens.push(authToken);
-          result.refresh_tokens.push(refreshToken);
+          result.authTokens.push(authToken);
+          result.refreshTokens.push(refreshToken);
           return result.save(function (err) {
             if (err) {
               res.json({ success: false, message: err.toString });
@@ -85,9 +88,13 @@ var authApi = (0, _resourceRouterMiddleware2.default)({
               res.json({
                 success: true,
                 message: 'Authentication successfull',
-                authToken: authToken,
-                expiresIn: _config2.default.authTokenExpiresIn,
-                refreshToken: refreshToken
+                data: {
+                  userType: userType,
+                  authToken: authToken,
+                  expiresIn: _config2.default.authTokenExpiresIn,
+                  refreshToken: refreshToken
+                }
+
               });
             }
           });

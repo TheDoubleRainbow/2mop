@@ -13,6 +13,10 @@ var _bcrypt = require('bcrypt');
 
 var _bcrypt2 = _interopRequireDefault(_bcrypt);
 
+var _mongoosePaginate = require('mongoose-paginate');
+
+var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var userSchema = exports.userSchema = new _mongoose2.default.Schema({
@@ -26,12 +30,14 @@ var userSchema = exports.userSchema = new _mongoose2.default.Schema({
   avatar: { type: String, default: "" },
   birth_date: { type: Date, default: "" },
   description: { type: String, default: "" },
-  skills: { type: Array, default: [] },
+  skills: { type: [String], default: [] },
   phone_number: { type: String, default: "" },
-  auth_tokens: { type: Array, default: [] },
-  refresh_tokens: { type: Array, default: [] }
+  auth_tokens: { type: [String], default: [], select: false },
+  refresh_tokens: { type: [String], default: [], select: false }
   //  type: { type: String, required: true },
 });
+
+userSchema.plugin(_mongoosePaginate2.default);
 
 userSchema.pre('save', function (next) {
   var user = this;

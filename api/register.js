@@ -42,8 +42,8 @@ const userApi = resource({
 		expiresIn: config.refreshTokenExpiresIn
 		});
 
-		user.auth_tokens.push(authToken);
-		user.refresh_tokens.push(refreshToken);
+		user.authTokens.push(authToken);
+		user.refreshTokens.push(refreshToken);
 
 		user.save()
 			.then( () => {
@@ -51,6 +51,7 @@ const userApi = resource({
 					status: 0,
 					message: 'Registration successfull',
 					data: {
+						userType: body.type,
 						authToken,
 						expiresIn: config.authTokenExpiresIn,
 						refreshToken

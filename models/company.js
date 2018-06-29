@@ -1,19 +1,23 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import mongoosePaginate from 'mongoose-paginate'
 
 const companySchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true, select: false },
-  created_at: { type: Date, default: new Date() },
+  createdAt: { type: Date, default: new Date() },
   avatar: { type: String, default: "" },
   description: { type: String, default: "" },
-  phone_number: { type: String, default: "" },
+  phoneNumber: { type: String, default: "" },
+  webSite: { type: String, default: ""},
   location: { type: String, required: true},
-  auth_tokens: { type: Array, default: [] },
-  refresh_tokens: { type: Array, default: [] },
+  authTokens: { type: [String], default: [], select: false },
+  refreshTokens: { type: [String], default: [], select: false },
   //type: { type: String, required: true },
 });
+
+companySchema.plugin(mongoosePaginate);
 
 companySchema.pre('save', function(next) {
   var company = this;

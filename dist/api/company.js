@@ -18,51 +18,118 @@ var _company = require('../models/company');
 
 var _company2 = _interopRequireDefault(_company);
 
+var _requireAuth = require('../middleware/require-auth');
+
+var _requireAuth2 = _interopRequireDefault(_requireAuth);
+
+var _express = require('express');
+
+var _express2 = _interopRequireDefault(_express);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var companyApi = (0, _resourceRouterMiddleware2.default)({
-	id: 'companyId',
+var router = _express2.default.Router();
 
-	index: function index(_ref, res) {
-		var params = _ref.params;
+router.get('/', _requireAuth2.default, function (_ref, res) {
+	var query = _ref.query;
 
-		_company2.default.find().then(function (result) {
-			return res.send(result);
-		}).catch(function (error) {
-			return res.status(400).send(error);
+	//CompanyModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
+	var page = parseInt(query.page || 0);
+	var perPage = parseInt(query.perPage || 20);
+	_company2.default.paginate({}, { offset: page * perPage, limit: perPage }).then(function (result) {
+		return res.send({
+			status: 0,
+			message: "",
+			devMessage: "",
+			data: result.docs,
+			metaData: {
+				totalPages: result.total % perPage == 0 ? result.total / perPage : parseInt(result.total / perPage) + 1,
+				perPage: perPage,
+				currentPage: page
+			}
 		});
-	},
-	read: function read(_ref2, res) {
-		var companyId = _ref2.params.companyId;
-
-		_company2.default.findById(companyId).then(function (result) {
-			return res.send(result);
-		}).catch(function () {
-			return res.status(404).send((0, _resMessage2.default)('Company not found.'));
+	}).catch(function (error) {
+		return res.json({
+			status: -1,
+			message: "",
+			devMessage: error.toString()
 		});
-	},
-	update: function update(_ref3, res) {
-		var companyId = _ref3.params.companyId,
-		    body = _ref3.body;
+	});
+});
 
-		_company2.default.findByIdAndUpdate(companyId, body).then(function () {
-			return _company2.default.findById(companyId).then(function (result) {
-				return res.send(result);
+router.get('/:companyId', function (_ref2, req) {
+	var companyId = _ref2.params.companyId;
+
+	_company2.default.findById(companyId).then(function (result) {
+		return res.send({
+			status: 0,
+			message: "",
+			devMessage: "",
+			data: result
+		});
+	}).catch(function (error) {
+		return res.json({
+			status: -1,
+			message: "",
+			devMessage: "Company not found"
+		});
+	});
+});
+
+router.put('/:companyId', _requireAuth2.default, function (_ref3, res) {
+	var companyId = _ref3.params.companyId,
+	    body = _ref3.body,
+	    company = _ref3.company;
+
+	if (companyId == company._id) {
+		_company2.default.findByIdAndUpdate(companyId, { name: body.name, avatar: body.avatar, webSite: body.webSite, description: body.description, phoneNumper: body.phoneNumper, location: body.location }).then(function () {
+			return res.json({
+				status: 0,
+				message: "",
+				devMessage: "Company data update success"
 			});
-		}).catch(function () {
-			return res.status(404).send((0, _resMessage2.default)('Company not found.'));
+		}).catch(function (err) {
+			return res.json({
+				status: -1,
+				message: "",
+				devMessage: err.toString
+			});
 		});
-	},
-	delete: function _delete(_ref4, res) {
-		var companyId = _ref4.params.companyId;
-
-		_company2.default.findByIdAndRemove(companyId).then(function () {
-			return res.send((0, _resMessage2.default)('Company successfully deleted!'));
-		}).catch(function () {
-			return res.status(404).send((0, _resMessage2.default)('Company not found.'));
+	} else {
+		res.json({
+			status: -1,
+			message: "",
+			devMessage: "You don't have permissions"
 		});
 	}
 });
 
-exports.default = companyApi;
+router.delete('/:companyId', _requireAuth2.default, function (_ref4, res) {
+	var companyId = _ref4.params.companyId,
+	    body = _ref4.body,
+	    company = _ref4.company;
+
+	if (companyId == company._id) {
+		_company2.default.findByIdAndRemove(companyId).then(function () {
+			return res.json({
+				status: 0,
+				message: "",
+				devMessage: "Company successfuly deleted"
+			});
+		}).catch(function (err) {
+			return res.json({
+				status: -1,
+				message: "",
+				devMessage: err.toString
+			});
+		});
+	} else {
+		res.json({
+			status: -1,
+			message: "",
+			devMessage: "You don't have permissions to do it"
+		});
+	}
+});
+exports.default = router;
 //# sourceMappingURL=company.js.map

@@ -9,12 +9,12 @@ const authApi = resource({
 	create({ body: { email, password } }, res) {
     let promiseArray = []
     promiseArray.push(new Promise((resolve, reject) => {
-      UserModel.findOne({ email }).select("+password").then(result => {
+      UserModel.findOne({ email }).select({password: 1, authTokens: 1, refreshTokens: 1}).then(result => {
         resolve(result);
       })
     }));
     promiseArray.push(new Promise((resolve, reject) => {
-      CompanyModel.findOne({ email }).select("+password").then(result => {
+      CompanyModel.findOne({ email }).select({password: 1, authTokens: 1, refreshTokens: 1}).then(result => {
         resolve(result);
       })
     }))
@@ -28,15 +28,18 @@ const authApi = resource({
             message: 'Authentication failed. User not found.'
           })
         }
+
+        let userType = "";
+
         if (!isEmpty(result[0])) {
           result = result[0];
+          userType = "user";
         }
 
         if (!isEmpty(result[1])) {
           result = result[1];
+          userType = "company";
         }
-
-        let userType = result.type;
 
         console.log('result ', result)
 
@@ -50,8 +53,8 @@ const authApi = resource({
               expiresIn: config.refreshTokenExpiresIn
             });
 
-            result.auth_tokens.push(authToken);
-            result.refresh_tokens.push(refreshToken);
+            result.authTokens.push(authToken);
+            result.refreshTokens.push(refreshToken);
             return result.save((err)=>{
               if(err){
                 res.json({success: false, message: err.toString});
@@ -59,9 +62,13 @@ const authApi = resource({
                 res.json({
                   success: true,
                   message: 'Authentication successfull',
-                  authToken,
-                  expiresIn: config.authTokenExpiresIn,
-                  refreshToken
+                  data: {
+                    userType,
+                    authToken,
+                    expiresIn: config.authTokenExpiresIn,
+                    refreshToken,
+                  }
+
                 });
               }
             })

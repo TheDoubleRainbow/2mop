@@ -12,18 +12,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Schema = _mongoose2.default.Schema;
 
-var hakatonSchema = new _mongoose2.default.Schema({
+var excursionSchema = new _mongoose2.default.Schema({
   name: { type: String, required: true },
   created_at: { type: Date, default: new Date() },
   avatar: { type: String, default: "" },
   description: { type: String, default: "" },
   organizerId: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
-  location: { type: String, required: true },
   date: { type: String, required: true },
   time: { type: String, default: "" }
 });
 
-var hakatonModel = _mongoose2.default.model('Hakaton', hakatonSchema);
+var excursionModel = _mongoose2.default.model('Excursion', excursionSchema);
 
-exports.default = hakatonModel;
-//# sourceMappingURL=hakaton.js.map
+exports.default = excursionModel;
+
+
+excursionSchema.pre;
+//# sourceMappingURL=excursion.js.map
