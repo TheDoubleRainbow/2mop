@@ -32,10 +32,10 @@ export default {
           console.log('recovering...', email)
       },
       login(data){
-          console.log('logining in...', data)
+          this.$store.commit('login', data)
       },
       register(data){
-          console.log('registring...', data)
+          this.$store.commit('register', data)
       }
   },
   created: function() {
@@ -47,6 +47,9 @@ export default {
     LoginForm,
     RegisterForm,
     RecoveryForm
+  },
+  beforeDestroy: function(){
+    this.$store.state.authError = '';
   }
 };
 </script>

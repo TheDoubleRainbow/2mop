@@ -4,8 +4,8 @@
                 <div>
                     <div class="typeQuestion">Who are you?</div>
                     <div class="buttons has-addons is-centered">
-                        <span @click="data.type = 1" class="switchButton button" v-bind:class="data.type === 1 ? 'is-link' : ''">Student</span>
-                        <span @click="data.type = 2" class="switchButton button" v-bind:class="data.type === 2 ? 'is-link' : ''">Company</span>
+                        <span @click="data.type = 'user'" class="switchButton button" v-bind:class="data.type === 'user' ? 'is-link' : ''">Student</span>
+                        <span @click="data.type = 'company'" class="switchButton button" v-bind:class="data.type === 'company' ? 'is-link' : ''">Company</span>
                     </div>
                 </div>
         </div>
@@ -14,6 +14,24 @@
                 <label class="label">Email</label>
                 <div class="control has-icons-left ">
                     <input v-model="data.email" class="input" type="email" placeholder="Email" />
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">First name</label>
+                <div class="control has-icons-left ">
+                    <input v-model="data.name.first" class="input" type="text" placeholder="First name" />
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Last name</label>
+                <div class="control has-icons-left ">
+                    <input v-model="data.name.last" class="input" type="text" placeholder="Last name" />
                     <span class="icon is-small is-left">
                         <i class="fas fa-envelope"></i>
                     </span>
@@ -38,6 +56,7 @@
                 </div>
             </div>
             <div v-if="error.status" class="errorBlock">{{error.text}}</div>
+            <div class="formError">{{errorText}}</div>
             <div class="loginButtonWrap">
                 <button class="loginButton button is-dark">Register</button>
                 <span class="or">OR</span>
@@ -58,10 +77,14 @@ export default {
     data: function() {
         return {
             data: {
-                type: 1,
+                type: 'user',
                 email: '',
                 password: '',
                 confirmPassword: '',
+                name: {
+                    first: '',
+                    last: ''
+                }
             },
             error: {
                 staus: 0,
@@ -87,6 +110,11 @@ export default {
                 text: ''
             }
         }
+    },
+    computed: {
+      errorText: function(){
+          return this.$store.state.authError
+      }
     }
 }
 </script>
