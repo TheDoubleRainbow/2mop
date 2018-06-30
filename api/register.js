@@ -1,5 +1,4 @@
 import resource from 'resource-router-middleware';
-import resMessage from '../lib/res-message';
 import UserModel from '../models/user';
 import CompanyModel from '../models/company';
 import jwt from 'jsonwebtoken';
@@ -17,12 +16,14 @@ const userApi = resource({
 		console.log(CompanyModel.schema);
 		let user = null;
 
+		const userData = body.userData;
+
 		switch(body.type){
 			case 'user': 
-				user = new UserModel(body);
+				user = new UserModel({name: userData.name, email: userData.email, password: userData.password});
 				break;
 			case 'company':
-				user = new CompanyModel(body);
+				user = new CompanyModel({name: userData.name, email: userData.email, password: userData.password});
 				break;
 			default:
 				res.json({
@@ -40,8 +41,8 @@ const userApi = resource({
 		expiresIn: config.refreshTokenExpiresIn
 		});
 
-		user.auth_tokens.push(authToken);
-		user.refresh_tokens.push(refreshToken);
+		user.authTokens.push(authToken);
+		user.refreshTokens.push(refreshToken);
 
 		user.save()
 			.then( () => {
@@ -49,6 +50,8 @@ const userApi = resource({
 					status: 0,
 					message: 'Registration successfull',
 					data: {
+						userType: body.type,
+						uId: user._id,
 						authToken,
 						expiresIn: config.authTokenExpiresIn,
 						refreshToken
@@ -57,13 +60,22 @@ const userApi = resource({
 			})
 			.catch(error => {
 				let message = "Registration failture";
-				if(error.code == 11000) message = "User with such email is exists";
-				res.json({
-					status: error.code || -1,
-					message,
-					//devMessage: resMessage(error.message)
-					devMessage: error.message,
-				})
+				if(error.code == 11000) {
+					message = "User with such email is exists";
+					res.json({
+						status: 2,
+						message,
+						//devMessage: resMessage(error.message)
+						devMessage: error,
+					})
+				} else {
+					res.json({
+						status: error.code || -1,
+						message,
+						//devMessage: resMessage(error.message)
+						devMessage: error,
+					})
+				}
 			})
 	},
 });

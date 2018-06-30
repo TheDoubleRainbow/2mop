@@ -16,6 +16,10 @@ var _user = require('../models/user');
 
 var _user2 = _interopRequireDefault(_user);
 
+var _company = require('../models/company');
+
+var _company2 = _interopRequireDefault(_company);
+
 var _config = require('../config');
 
 var _config2 = _interopRequireDefault(_config);
@@ -30,14 +34,26 @@ var logoutApi = (0, _resourceRouterMiddleware2.default)({
         var refreshToken = body.refreshToken || "";
         _jsonwebtoken2.default.verify(refreshToken, _config2.default.jwtSecret, function (err, decoded) {
             if (!err && decoded.type == "refresh") {
-                _user2.default.findById(decoded.sub).then(function (user) {
+
+                var Model = null;
+
+                switch (decoded.userType) {
+                    case 'user':
+                        Model = _user2.default;
+                        break;
+                    case 'company':
+                        Model = _company2.default;
+                        break;
+                }
+
+                Model.findById(decoded.sub).then(function (user) {
                     if (user) {
-                        user.refresh_tokens = user.refresh_tokens.filter(function (e) {
+                        user.refreshTokens = user.refreshTokens.filter(function (e) {
                             return e !== refreshToken;
                         });
 
                         if (headers && headers['authorization']) {
-                            user.auth_tokens = user.auth_tokens.filter(function (e) {
+                            user.authTokens = user.authTokens.filter(function (e) {
                                 return e !== headers['authorization'];
                             });
                         }
@@ -48,10 +64,16 @@ var logoutApi = (0, _resourceRouterMiddleware2.default)({
                             return res.json({
                                 status: -1,
                                 message: 'Logout failture',
-                                devMessage: resMessage(error.message)
+                                devMessage: error.message
                             });
                         });
                     }
+                }).catch(function (error) {
+                    res.json({
+                        status: -1,
+                        message: "",
+                        devMessage: error
+                    });
                 });
             } else {
                 res.status(400).json({

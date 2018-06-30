@@ -13,6 +13,10 @@ var _bcrypt = require('bcrypt');
 
 var _bcrypt2 = _interopRequireDefault(_bcrypt);
 
+var _mongoosePaginate = require('mongoose-paginate');
+
+var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var userSchema = exports.userSchema = new _mongoose2.default.Schema({
@@ -22,15 +26,22 @@ var userSchema = exports.userSchema = new _mongoose2.default.Schema({
   },
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true, select: false },
-  created_at: { type: Date, default: new Date() },
+  created_at: { type: Number, default: Math.floor(Date.now() / 1000) },
   avatar: { type: String, default: "" },
-  birth_date: { type: Date, default: "" },
+  birthDate: { type: Date, default: "" },
   description: { type: String, default: "" },
-  phone_number: { type: String, default: "" },
-  auth_tokens: { type: Array, default: [] },
-  refresh_tokens: { type: Array, default: [] },
-  type: { type: String, required: true }
+  skills: { type: [String], default: [] },
+  phoneNumber: { type: String, default: "" },
+  workPlacesId: { type: [String], default: [] },
+  emailVerified: { type: Boolean, default: false },
+  authTokens: { type: [String], default: [], select: false },
+  refreshTokens: { type: [String], default: [], select: false }
+  //  type: { type: String, required: true },
+}, {
+  versionKey: false
 });
+
+userSchema.plugin(_mongoosePaginate2.default);
 
 userSchema.pre('save', function (next) {
   var user = this;

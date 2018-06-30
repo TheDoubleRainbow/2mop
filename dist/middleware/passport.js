@@ -28,6 +28,7 @@ var opts = {
 exports.default = function (passport) {
   return passport.use(new _passportJwt.Strategy(opts, function (payload, done) {
     if (payload.type !== "auth") {
+      console.log(payload);
       return done(new Error("Invalid token"), null);
     }
 
@@ -41,11 +42,13 @@ exports.default = function (passport) {
         Model = _company2.default;
         break;
       default:
+        console.log("user not found");
         return done(new Error("User not found."), null);
     }
 
     Model.findById(payload.sub).then(function (user) {
       if (user) {
+        user.type = payload.userType;
         return done(null, user);
       }
 

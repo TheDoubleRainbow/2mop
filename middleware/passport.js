@@ -10,6 +10,7 @@ const opts = {
 
 export default passport => passport.use(new Strategy(opts, (payload, done) => {
   if(payload.type !== "auth"){
+    console.log(payload)
     return done(new Error("Invalid token"), null);
   }
 
@@ -23,12 +24,14 @@ export default passport => passport.use(new Strategy(opts, (payload, done) => {
       Model = Company;
       break;
     default: 
+    console.log("user not found");
     return done(new Error("User not found."), null);
   }
 
   Model.findById(payload.sub)
     .then(user => {
       if (user) {
+        user.type = payload.userType
         return done(null, user);
       }
 

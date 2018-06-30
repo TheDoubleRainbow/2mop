@@ -1,49 +1,26 @@
-// import mongoose from 'mongoose';
-// import UserModel, {userSchema} from '../models/user';
-// import bcrypt from 'bcrypt';
-
-
-// function extendSchema (Schema, definition, options) {
-//     return new mongoose.Schema(
-//       Object.assign({}, Schema.obj, definition),
-//       options
-//     );
-// }
-
-// const companySchema = extendSchema(userSchema, {
-//     name: {type: String, required: true}
-// });
-
-// // companySchema.methods.comparePassword = function(pw, cb) {
-// //     bcrypt.compare(pw, this.password, function(err, isMatch) {
-// //       if (err) {
-// //         return cb(err);
-// //       }
-      
-// //       return cb(null, isMatch);
-// //     });
-// //   };
-
-// const companyModel = mongoose.model('Company', companySchema);
-
-// export default companyModel;
-
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import mongoosePaginate from 'mongoose-paginate'
 
 const companySchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true, select: false },
-  created_at: { type: Date, default: new Date() },
+  created_at: { type: Number, default: Math.floor( Date.now() / 1000) },
   avatar: { type: String, default: "" },
-  birth_date: { type: Date, default: "" },
   description: { type: String, default: "" },
-  phone_number: { type: String, default: "" },
-  auth_tokens: { type: Array, default: [] },
-  refresh_tokens: { type: Array, default: [] },
-  type: { type: String, required: true },
+  phoneNumber: { type: String, default: "" },
+  webSite: { type: String, default: ""},
+  //location: { type: String, required: true },
+  officesPlaceId: { type: [String], default: []},
+  authTokens: { type: [String], default: [], select: false },
+  refreshTokens: { type: [String], default: [], select: false },
+  //type: { type: String, required: true },
+}, {
+  versionKey: false
 });
+
+companySchema.plugin(mongoosePaginate);
 
 companySchema.pre('save', function(next) {
   var company = this;

@@ -9,12 +9,12 @@ const authApi = resource({
 	create({ body: { email, password } }, res) {
     let promiseArray = []
     promiseArray.push(new Promise((resolve, reject) => {
-      UserModel.findOne({ email }).select("+password").then(result => {
+      UserModel.findOne({ email }).select({password: 1, authTokens: 1, refreshTokens: 1}).then(result => {
         resolve(result);
       })
     }));
     promiseArray.push(new Promise((resolve, reject) => {
-      CompanyModel.findOne({ email }).select("+password").then(result => {
+      CompanyModel.findOne({ email }).select({password: 1, authTokens: 1, refreshTokens: 1}).then(result => {
         resolve(result);
       })
     }))
@@ -23,20 +23,23 @@ const authApi = resource({
     Promise.all(promiseArray)
       .then(result => {
         if (isEmpty(result[0]) && isEmpty(result[1])) {
-          return res.send({
+          return res.json({
             status: 3,
             message: 'Authentication failed. User not found.'
           })
         }
+
+        let userType = "";
+
         if (!isEmpty(result[0])) {
           result = result[0];
+          userType = "user";
         }
 
         if (!isEmpty(result[1])) {
           result = result[1];
+          userType = "company";
         }
-
-        let userType = result.type;
 
         console.log('result ', result)
 
@@ -50,25 +53,30 @@ const authApi = resource({
               expiresIn: config.refreshTokenExpiresIn
             });
 
-            result.auth_tokens.push(authToken);
-            result.refresh_tokens.push(refreshToken);
+            result.authTokens.push(authToken);
+            result.refreshTokens.push(refreshToken);
             return result.save((err)=>{
               if(err){
-                res.json({success: false, message: err.toString});
+                res.json({status: -1, message: err});
               } else {
                 res.json({
-                  success: true,
+                  status: 0,
                   message: 'Authentication successfull',
-                  authToken,
-                  expiresIn: config.authTokenExpiresIn,
-                  refreshToken
+                  data: {
+                    userType,
+                    uId: result._id,
+                    authToken,
+                    expiresIn: config.authTokenExpiresIn,
+                    refreshToken,
+                  }
+
                 });
               }
             })
           }
 
-          res.status(401).send({
-            success: false,
+          res.json({
+            status: 4,
             message: 'Authentication failed. Passwords did not match.'
           });
         });

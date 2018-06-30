@@ -8,10 +8,6 @@ var _resourceRouterMiddleware = require('resource-router-middleware');
 
 var _resourceRouterMiddleware2 = _interopRequireDefault(_resourceRouterMiddleware);
 
-var _resMessage = require('../lib/res-message');
-
-var _resMessage2 = _interopRequireDefault(_resMessage);
-
 var _user = require('../models/user');
 
 var _user2 = _interopRequireDefault(_user);
@@ -44,12 +40,14 @@ var userApi = (0, _resourceRouterMiddleware2.default)({
 		console.log(_company2.default.schema);
 		var user = null;
 
+		var userData = body.userData;
+
 		switch (body.type) {
 			case 'user':
-				user = new _user2.default(body);
+				user = new _user2.default({ name: userData.name, email: userData.email, password: userData.password });
 				break;
 			case 'company':
-				user = new _company2.default(body);
+				user = new _company2.default({ name: userData.name, email: userData.email, password: userData.password });
 				break;
 			default:
 				res.json({
@@ -67,14 +65,16 @@ var userApi = (0, _resourceRouterMiddleware2.default)({
 			expiresIn: _config2.default.refreshTokenExpiresIn
 		});
 
-		user.auth_tokens.push(authToken);
-		user.refresh_tokens.push(refreshToken);
+		user.authTokens.push(authToken);
+		user.refreshTokens.push(refreshToken);
 
 		user.save().then(function () {
 			res.json({
 				status: 0,
 				message: 'Registration successfull',
 				data: {
+					userType: body.type,
+					uId: user._id,
 					authToken: authToken,
 					expiresIn: _config2.default.authTokenExpiresIn,
 					refreshToken: refreshToken
@@ -82,13 +82,22 @@ var userApi = (0, _resourceRouterMiddleware2.default)({
 			});
 		}).catch(function (error) {
 			var message = "Registration failture";
-			if (error.code == 11000) message = "User with such email is exists";
-			res.json({
-				status: error.code || -1,
-				message: message,
-				//devMessage: resMessage(error.message)
-				devMessage: error.message
-			});
+			if (error.code == 11000) {
+				message = "User with such email is exists";
+				res.json({
+					status: 2,
+					message: message,
+					//devMessage: resMessage(error.message)
+					devMessage: error
+				});
+			} else {
+				res.json({
+					status: error.code || -1,
+					message: message,
+					//devMessage: resMessage(error.message)
+					devMessage: error
+				});
+			}
 		});
 	}
 });
