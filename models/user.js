@@ -14,13 +14,7 @@ export const userSchema = new mongoose.Schema({
   birthDate: { type: Number, default: null },
   description: { type: String, default: "" },
   desiredWork: { type: String, default: ""},
-  skills: { type: { 
-    type: [{
-      key: { type: String },
-      val: { type: String }
-    }],
-    default: []    
-  }, default: [] },
+  skills: { type: [String], default: [] },
   portfolio: {type: [{name: {type: String}, url: {type: String}}], default: []},
   phoneNumber: { type: String, default: "" },
   location: {
