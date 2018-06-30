@@ -18,6 +18,15 @@ const userApi = resource({
 
 		const userData = body.userData;
 
+		if(!userData){
+			res.json({
+				status: -1,
+				message: "",
+				devMessage: "Invalid user data"
+			});
+			return;
+		}
+
 		switch(body.type){
 			case 'user': 
 				user = new UserModel({name: userData.name, email: userData.email, password: userData.password});

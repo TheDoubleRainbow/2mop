@@ -30,9 +30,19 @@ var userSchema = exports.userSchema = new _mongoose2.default.Schema({
   avatar: { type: String, default: "" },
   birthDate: { type: Date, default: "" },
   description: { type: String, default: "" },
-  skills: { type: [String], default: [] },
+  skills: { type: {
+      type: [{
+        key: { type: String },
+        val: { type: String }
+      }],
+      default: []
+    }, default: [] },
+  portfolio: { type: [{ name: { type: String }, url: { type: String } }], default: [] },
   phoneNumber: { type: String, default: "" },
-  workPlacesId: { type: [String], default: [] },
+  location: {
+    cityId: { type: String, default: [] },
+    formattedAddress: { type: String, default: [] }
+  },
   emailVerified: { type: Boolean, default: false },
   authTokens: { type: [String], default: [], select: false },
   refreshTokens: { type: [String], default: [], select: false }
