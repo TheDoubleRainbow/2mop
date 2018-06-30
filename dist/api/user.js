@@ -82,7 +82,7 @@ router.put('/:userId', _requireAuth2.default, function (_ref3, res) {
 	    user = _ref3.user;
 
 	if (userId == user._id) {
-		_user2.default.findByIdAndUpdate(userId, { name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper }).then(function () {
+		_user2.default.findByIdAndUpdate(userId, { name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper, desiredWork: body.desiredWork }).then(function () {
 			return res.json({
 				status: 0,
 				message: "",

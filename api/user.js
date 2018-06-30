@@ -46,7 +46,7 @@ router.get('/:userId', ({ params: { userId } }, res) => {
 
 router.put('/:userId', requireAuth, ({ params: { userId }, body, user }, res) => {
 	if(userId == user._id){
-		UserModel.findByIdAndUpdate(userId, {name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper})
+		UserModel.findByIdAndUpdate(userId, {name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper, desiredWork: body.desiredWork})
 			.then(() => res.json({
 				status: 0,
 				message: "",

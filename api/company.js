@@ -29,7 +29,7 @@ router.get('/', requireAuth, ({query}, res) => {
 		}))
 });
 
-router.get('/:companyId', ({ params: { companyId } }, req) => {
+router.get('/:companyId', ({ params: { companyId } }, res) => {
 	CompanyModel.findById(companyId)
 		.then(result => res.send({
 			status: 0,

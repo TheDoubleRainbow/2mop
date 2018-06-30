@@ -30,6 +30,7 @@ var userSchema = exports.userSchema = new _mongoose2.default.Schema({
   avatar: { type: String, default: "" },
   birthDate: { type: Number, default: null },
   description: { type: String, default: "" },
+  desiredWork: { type: String, default: "" },
   skills: { type: {
       type: [{
         key: { type: String },
