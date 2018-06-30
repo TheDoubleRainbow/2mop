@@ -15,7 +15,7 @@
           <router-link active-class='active' to="/" class='navbar-item'>Jobs</router-link>
           <router-link active-class='active' to="/hackathons" class='navbar-item'>Hackathons</router-link>
           <router-link active-class='active' to="/excursions" class='navbar-item'>Excursions</router-link>
-          <router-link active-class='active' to="/Profile" class='navbar-item'>Profile</router-link>
+          <router-link active-class='active' to="/profile" class='navbar-item'>Profile</router-link>
         </div>
         <div v-if="!isLogined" class="navbar-end">
           <div class="navbar-item">

@@ -15,8 +15,8 @@ export default new Vuex.Store({
       fetch('https://bokunozibra.herokuapp.com/api/auth', {headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload), method: 'POST'}).then(res=>{
         return res.json()
       }).then(res => {
-        if(res.success == true){
-          state.auth = res
+        if(res.status === 0){
+          state.auth = res.data
           state.auth.logTime = new Date().getTime();
           state.auth.expiresIn *= 1000;
           router.push('/')
@@ -31,7 +31,7 @@ export default new Vuex.Store({
       fetch('https://bokunozibra.herokuapp.com/api/register', {headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload), method: 'POST'}).then(res=>{
         return res.json()
       }).then(res => {
-        if(res.success == true){
+        if(res.status === 0){
           state.auth = res.data
           state.auth.logTime = new Date().getTime();
           state.auth.expiresIn *= 1000;
@@ -45,6 +45,7 @@ export default new Vuex.Store({
     },
     logout(state){
       state.auth = {};
+      localStorage.auth = false;
       router.push('login')
     },
     refreshToken(state, from){
