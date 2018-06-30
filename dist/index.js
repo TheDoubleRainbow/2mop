@@ -50,13 +50,19 @@ var _passport3 = require('./middleware/passport');
 
 var _passport4 = _interopRequireDefault(_passport3);
 
+var _expressHistoryApiFallback = require('express-history-api-fallback');
+
+var _expressHistoryApiFallback2 = _interopRequireDefault(_expressHistoryApiFallback);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var app = (0, _express2.default)();
+var root = _path2.default.join(__dirname, '..', 'client', 'dist');
 
 app.server = _http2.default.createServer(app);
 
-app.use(_express2.default.static(_path2.default.join(__dirname, '..', 'client', 'dist')));
+app.use(_express2.default.static(root));
+app.use((0, _expressHistoryApiFallback2.default)('index.html', { root: root }));
 
 app.use((0, _morgan2.default)('dev'));
 //app.use(cors({ exposedHeaders: config.corsHeaders }));
