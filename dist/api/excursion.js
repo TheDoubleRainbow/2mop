@@ -72,7 +72,7 @@ router.post('/', _requireAuth2.default, function (_ref3, res) {
 	    user = _ref3.user;
 
 	if (user.type == "company") {
-		var excursion = new _excursion2.default({ name: body.name, avatar: body.avatar, description: body.description, organizerId: user._id, requiredSkills: body.requiredSkills });
+		var excursion = new _excursion2.default({ name: body.name, photo: body.photo, description: body.description, organizerId: user._id, requiredSkills: body.requiredSkills });
 		excursion.save().then(function () {
 			res.json({
 				status: 0,
@@ -89,7 +89,7 @@ router.post('/', _requireAuth2.default, function (_ref3, res) {
 		});
 	} else {
 		res.json({
-			status: -1,
+			status: 7,
 			message: "",
 			devMessage: "You don't have permissions to do it"
 		});

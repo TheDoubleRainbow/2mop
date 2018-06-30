@@ -8,8 +8,8 @@ router.get('/', ({query}, res) => {
 	//VacancyModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
 	const page = parseInt(query.page || 0);
     const perPage = parseInt(query.perPage || 20);
-    const employer = query.employer; 
-	VacancyModel.paginate(employer ? {employer} : {}, {offset: page * perPage , limit: perPage})
+    const ownerId = query.ownerId; 
+	VacancyModel.paginate(ownerId ? {ownerId} : {}, {offset: page * perPage , limit: perPage})
 		.then(result => res.json({
 			status: 0,
 			message: "",
@@ -45,7 +45,7 @@ router.get('/:vacancyId', ({ params: { vacancyId } }, res) => {
 
 router.post('/', requireAuth, ({body, user}, res) => {
 	if(user.type == "company"){
-		const vacancy = new vacancyModel({name: body.name, avatar: body.avatar, description: body.description, employerId: user._id, requiredSkills: body.requiredSkills});
+		const vacancy = new vacancyModel({name: body.name, photo: body.photo, description: body.description, ownerId: user._id, requiredSkills: body.requiredSkills, location: {placeId: body.placeId, formattedAddress: body.formattedAddress || "City Name"}, types: body.types});
 		vacancy.save()			
 			.then( () => {
 				res.json({
@@ -64,7 +64,7 @@ router.post('/', requireAuth, ({body, user}, res) => {
 			})
 	} else {
 		res.json({
-			status: -1,
+			status: 7,
 			message: "",
 			devMessage: "You don't have permissions to do it",
 		})
@@ -74,7 +74,7 @@ router.post('/', requireAuth, ({body, user}, res) => {
 router.put('/:vacancyId', requireAuth, ({ params: { vacancyId }, body, user }, res) => {
 	// let updates = {name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper};
 	// let update = {name: body.name};
-	VacancyModel.findOneAndUpdate({_id: vacancyId, employerId: user._id}, body, {new: true}).then( doc => {
+	VacancyModel.findOneAndUpdate({_id: vacancyId, ownerId: user._id}, {name: body.name, photo: body.photo, description: body.description, ownerId: user._id, requiredSkills: body.requiredSkills, location: {placeId: body.placeId, formattedAddress: body.formattedAddress || "City Name"}, types: body.types}, {new: true}).then( doc => {
 		res.json({
 			status: 0,
 			message: "",
@@ -93,7 +93,7 @@ router.put('/:vacancyId', requireAuth, ({ params: { vacancyId }, body, user }, r
 router.delete('/:vacancyId', requireAuth, ({ params: { vacancyId }, user }, res) => {
 //	if(vacancyId == vacancy._id){
 		//VacancyModel.findByIdAndRemove(vacancyId)
-		VacancyModel.findOneAndRemove({_id: vacancyId, employerId: user._id})
+		VacancyModel.findOneAndRemove({_id: vacancyId, ownerId: user._id})
 			.then(() => res.json({
 				status: 0,
 				message: "",

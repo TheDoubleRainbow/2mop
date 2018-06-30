@@ -45,7 +45,7 @@ router.get('/:hakatonId', ({ params: { hakatonId } }, res) => {
 
 router.post('/', requireAuth, ({body, user}, res) => {
 	if(user.type == "company"){
-		const hakaton = new hakatonModel({name: body.name, avatar: body.avatar, description: body.description, organizerId: user._id, requiredSkills: body.requiredSkills});
+		const hakaton = new hakatonModel({name: body.name, photo: body.photo, description: body.description, organizerId: user._id, requiredSkills: body.requiredSkills});
 		hakaton.save()			
 			.then( () => {
 				res.json({
@@ -64,7 +64,7 @@ router.post('/', requireAuth, ({body, user}, res) => {
 			})
 	} else {
 		res.json({
-			status: -1,
+			status: 7,
 			message: "",
 			devMessage: "You don't have permissions to do it",
 		})

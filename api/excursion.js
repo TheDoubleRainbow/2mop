@@ -45,7 +45,7 @@ router.get('/:excursionId', ({ params: { excursionId } }, res) => {
 
 router.post('/', requireAuth, ({body, user}, res) => {
 	if(user.type == "company"){
-		const excursion = new excursionModel({name: body.name, avatar: body.avatar, description: body.description, organizerId: user._id, requiredSkills: body.requiredSkills});
+		const excursion = new excursionModel({name: body.name, photo: body.photo, description: body.description, organizerId: user._id, requiredSkills: body.requiredSkills});
 		excursion.save()			
 			.then( () => {
 				res.json({
@@ -64,7 +64,7 @@ router.post('/', requireAuth, ({body, user}, res) => {
 			})
 	} else {
 		res.json({
-			status: -1,
+			status: 7,
 			message: "",
 			devMessage: "You don't have permissions to do it",
 		})

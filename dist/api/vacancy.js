@@ -26,8 +26,8 @@ router.get('/', function (_ref, res) {
 	//VacancyModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
 	var page = parseInt(query.page || 0);
 	var perPage = parseInt(query.perPage || 20);
-	var employer = query.employer;
-	_vacancy2.default.paginate(employer ? { employer: employer } : {}, { offset: page * perPage, limit: perPage }).then(function (result) {
+	var ownerId = query.ownerId;
+	_vacancy2.default.paginate(ownerId ? { ownerId: ownerId } : {}, { offset: page * perPage, limit: perPage }).then(function (result) {
 		return res.json({
 			status: 0,
 			message: "",
@@ -72,7 +72,7 @@ router.post('/', _requireAuth2.default, function (_ref3, res) {
 	    user = _ref3.user;
 
 	if (user.type == "company") {
-		var vacancy = new _vacancy2.default({ name: body.name, avatar: body.avatar, description: body.description, employerId: user._id, requiredSkills: body.requiredSkills });
+		var vacancy = new _vacancy2.default({ name: body.name, photo: body.photo, description: body.description, ownerId: user._id, requiredSkills: body.requiredSkills, location: { placeId: body.placeId, formattedAddress: body.formattedAddress || "City Name" }, types: body.types });
 		vacancy.save().then(function () {
 			res.json({
 				status: 0,
@@ -89,7 +89,7 @@ router.post('/', _requireAuth2.default, function (_ref3, res) {
 		});
 	} else {
 		res.json({
-			status: -1,
+			status: 7,
 			message: "",
 			devMessage: "You don't have permissions to do it"
 		});
@@ -103,7 +103,7 @@ router.put('/:vacancyId', _requireAuth2.default, function (_ref4, res) {
 
 	// let updates = {name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper};
 	// let update = {name: body.name};
-	_vacancy2.default.findOneAndUpdate({ _id: vacancyId, employerId: user._id }, body, { new: true }).then(function (doc) {
+	_vacancy2.default.findOneAndUpdate({ _id: vacancyId, ownerId: user._id }, { name: body.name, photo: body.photo, description: body.description, ownerId: user._id, requiredSkills: body.requiredSkills, location: { placeId: body.placeId, formattedAddress: body.formattedAddress || "City Name" }, types: body.types }, { new: true }).then(function (doc) {
 		res.json({
 			status: 0,
 			message: "",
@@ -125,7 +125,7 @@ router.delete('/:vacancyId', _requireAuth2.default, function (_ref5, res) {
 
 	//	if(vacancyId == vacancy._id){
 	//VacancyModel.findByIdAndRemove(vacancyId)
-	_vacancy2.default.findOneAndRemove({ _id: vacancyId, employerId: user._id }).then(function () {
+	_vacancy2.default.findOneAndRemove({ _id: vacancyId, ownerId: user._id }).then(function () {
 		return res.json({
 			status: 0,
 			message: "",

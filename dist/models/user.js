@@ -28,7 +28,7 @@ var userSchema = exports.userSchema = new _mongoose2.default.Schema({
   password: { type: String, required: true, select: false },
   created_at: { type: Number, default: Math.floor(Date.now() / 1000) },
   avatar: { type: String, default: "" },
-  birthDate: { type: Date, default: "" },
+  birthDate: { type: Number, default: null },
   description: { type: String, default: "" },
   skills: { type: {
       type: [{
