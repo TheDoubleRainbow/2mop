@@ -29,7 +29,7 @@ router.get('/', ({query}, res) => {
 		}))
 });
 
-router.get('/:userId', ({ params: { userId } }, req) => {
+router.get('/:userId', ({ params: { userId } }, res) => {
 	UserModel.findById(userId)
 		.then(result => res.send({
 			status: 0,

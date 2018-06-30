@@ -57,7 +57,7 @@ router.get('/', function (_ref, res) {
 	});
 });
 
-router.get('/:userId', function (_ref2, req) {
+router.get('/:userId', function (_ref2, res) {
 	var userId = _ref2.params.userId;
 
 	_user2.default.findById(userId).then(function (result) {
