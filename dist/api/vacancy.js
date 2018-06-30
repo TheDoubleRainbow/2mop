@@ -104,12 +104,21 @@ router.put('/:vacancyId', _requireAuth2.default, function (_ref4, res) {
 	// let updates = {name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper};
 	// let update = {name: body.name};
 	_vacancy2.default.findOneAndUpdate({ _id: vacancyId, ownerId: user._id }, { name: body.name, photo: body.photo, description: body.description, ownerId: user._id, requiredSkills: body.requiredSkills, location: { placeId: body.placeId, formattedAddress: body.formattedAddress || "City Name" }, types: body.types }, { new: true }).then(function (doc) {
-		res.json({
-			status: 0,
-			message: "",
-			devMessage: "Vacation successfull update",
-			data: doc
-		});
+		if (doc == null) {
+			res.json({
+				status: -1,
+				message: "",
+				devMessage: "Invalid vacancy id or you do not have permissions",
+				data: doc
+			});
+		} else {
+			res.json({
+				status: 0,
+				message: "",
+				devMessage: "Vacancy successfull update",
+				data: doc
+			});
+		}
 	}).catch(function (error) {
 		res.json({
 			status: -1,
@@ -125,12 +134,20 @@ router.delete('/:vacancyId', _requireAuth2.default, function (_ref5, res) {
 
 	//	if(vacancyId == vacancy._id){
 	//VacancyModel.findByIdAndRemove(vacancyId)
-	_vacancy2.default.findOneAndRemove({ _id: vacancyId, ownerId: user._id }).then(function () {
-		return res.json({
-			status: 0,
-			message: "",
-			devMessage: "Vacancy successfuly deleted"
-		});
+	_vacancy2.default.findOneAndRemove({ _id: vacancyId, ownerId: user._id }).then(function (result) {
+		if (result == null) {
+			res.json({
+				status: 0,
+				message: "",
+				devMessage: "Invalid vacancy id or you do not have permissions"
+			});
+		} else {
+			res.json({
+				status: 0,
+				message: "",
+				devMessage: "Vacancy successfuly deleted"
+			});
+		}
 	}).catch(function (err) {
 		return res.json({
 			status: -1,

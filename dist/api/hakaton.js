@@ -26,8 +26,8 @@ router.get('/', function (_ref, res) {
 	//HakatonModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
 	var page = parseInt(query.page || 0);
 	var perPage = parseInt(query.perPage || 20);
-	var organizer = query.organizer;
-	_hakaton2.default.paginate(organizer ? { organizer: organizer } : {}, { offset: page * perPage, limit: perPage }).then(function (result) {
+	var owner = query.owner;
+	_hakaton2.default.paginate(owner ? { owner: owner } : {}, { offset: page * perPage, limit: perPage }).then(function (result) {
 		return res.json({
 			status: 0,
 			message: "",
@@ -72,7 +72,7 @@ router.post('/', _requireAuth2.default, function (_ref3, res) {
 	    user = _ref3.user;
 
 	if (user.type == "company") {
-		var hakaton = new _hakaton2.default({ name: body.name, photo: body.photo, description: body.description, organizerId: user._id, requiredSkills: body.requiredSkills });
+		var hakaton = new _hakaton2.default({ name: body.name, photo: body.photo, description: body.description, ownerId: user._id, location: { placeId: body.placeId, formattedAddress: body.formattedAddress || 'City name' }, date: body.date });
 		hakaton.save().then(function () {
 			res.json({
 				status: 0,
@@ -103,7 +103,7 @@ router.put('/:hakatonId', _requireAuth2.default, function (_ref4, res) {
 
 	// let updates = {name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper};
 	// let update = {name: body.name};
-	_hakaton2.default.findOneAndUpdate({ _id: hakatonId, organizerId: user._id }, body, { new: true }).then(function (doc) {
+	_hakaton2.default.findOneAndUpdate({ _id: hakatonId, ownerId: user._id }, { name: body.name, photo: body.photo, description: body.description, ownerId: user._id, location: { placeId: body.placeId, formattedAddress: body.formattedAddress || 'City name' }, date: body.date }, { new: true }).then(function (doc) {
 		res.json({
 			status: 0,
 			message: "",
@@ -125,12 +125,20 @@ router.delete('/:hakatonId', _requireAuth2.default, function (_ref5, res) {
 
 	//	if(hakatonId == hakaton._id){
 	//HakatonModel.findByIdAndRemove(hakatonId)
-	_hakaton2.default.findOneAndRemove({ _id: hakatonId, organizerId: user._id }).then(function () {
-		return res.json({
-			status: 0,
-			message: "",
-			devMessage: "Hakaton successfuly deleted"
-		});
+	_hakaton2.default.findOneAndRemove({ _id: hakatonId, ownerId: user._id }).then(function (result) {
+		if (result == null) {
+			res.json({
+				status: 0,
+				message: "",
+				devMessage: "Invalid hakaton id or you do not have permissions"
+			});
+		} else {
+			res.json({
+				status: 0,
+				message: "",
+				devMessage: "Hakaton successfuly deleted"
+			});
+		}
 	}).catch(function (err) {
 		return res.json({
 			status: -1,
