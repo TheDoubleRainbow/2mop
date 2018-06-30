@@ -30,7 +30,7 @@ exports.default = function (req, res, next) {
         }
         if (!user) {
             res.json({
-                status: 2,
+                status: 5,
                 message: "",
                 devMessage: info.message
             });

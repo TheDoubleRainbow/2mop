@@ -20,10 +20,10 @@ const userApi = resource({
 
 		switch(body.type){
 			case 'user': 
-				user = new UserModel({name: userData.name, email: userData.email, password: userData.password, avatar: userData.avatar, phone_number: userData.phoneNumber});
+				user = new UserModel({name: userData.name, email: userData.email, password: userData.password});
 				break;
 			case 'company':
-				user = new CompanyModel({name: userData.name, email: userData.email, password: userData.password, avatar: userData.avatar, phone_number: userData.phoneNumber, location: userData.location});
+				user = new CompanyModel({name: userData.name, email: userData.email, password: userData.password});
 				break;
 			default:
 				res.json({
@@ -51,6 +51,7 @@ const userApi = resource({
 					message: 'Registration successfull',
 					data: {
 						userType: body.type,
+						uId: user._id,
 						authToken,
 						expiresIn: config.authTokenExpiresIn,
 						refreshToken
@@ -59,13 +60,22 @@ const userApi = resource({
 			})
 			.catch(error => {
 				let message = "Registration failture";
-				if(error.code == 11000) message = "User with such email is exists";
-				res.json({
-					status: error.code || -1,
-					message,
-					//devMessage: resMessage(error.message)
-					devMessage: error,
-				})
+				if(error.code == 11000) {
+					message = "User with such email is exists";
+					res.json({
+						status: 2,
+						message,
+						//devMessage: resMessage(error.message)
+						devMessage: error,
+					})
+				} else {
+					res.json({
+						status: error.code || -1,
+						message,
+						//devMessage: resMessage(error.message)
+						devMessage: error,
+					})
+				}
 			})
 	},
 });

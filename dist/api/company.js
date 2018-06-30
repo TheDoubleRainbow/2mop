@@ -69,7 +69,7 @@ router.get('/:companyId', function (_ref2, req) {
 		});
 	}).catch(function (error) {
 		return res.json({
-			status: -1,
+			status: 8,
 			message: "",
 			devMessage: "Company not found"
 		});
@@ -97,7 +97,7 @@ router.put('/:companyId', _requireAuth2.default, function (_ref3, res) {
 		});
 	} else {
 		res.json({
-			status: -1,
+			status: 7,
 			message: "",
 			devMessage: "You don't have permissions"
 		});
@@ -125,7 +125,7 @@ router.delete('/:companyId', _requireAuth2.default, function (_ref4, res) {
 		});
 	} else {
 		res.json({
-			status: -1,
+			status: 7,
 			message: "",
 			devMessage: "You don't have permissions to do it"
 		});

@@ -23,7 +23,7 @@ const authApi = resource({
     Promise.all(promiseArray)
       .then(result => {
         if (isEmpty(result[0]) && isEmpty(result[1])) {
-          return res.send({
+          return res.json({
             status: 3,
             message: 'Authentication failed. User not found.'
           })
@@ -57,13 +57,14 @@ const authApi = resource({
             result.refreshTokens.push(refreshToken);
             return result.save((err)=>{
               if(err){
-                res.json({success: false, message: err.toString});
+                res.json({status: -1, message: err});
               } else {
                 res.json({
-                  success: true,
+                  status: 0,
                   message: 'Authentication successfull',
                   data: {
                     userType,
+                    uId: result._id,
                     authToken,
                     expiresIn: config.authTokenExpiresIn,
                     refreshToken,
@@ -74,8 +75,8 @@ const authApi = resource({
             })
           }
 
-          res.status(401).send({
-            success: false,
+          res.json({
+            status: 4,
             message: 'Authentication failed. Passwords did not match.'
           });
         });

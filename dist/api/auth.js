@@ -49,7 +49,7 @@ var authApi = (0, _resourceRouterMiddleware2.default)({
     //promiseArray.push(CompanyModel.findOne({ email }).select("+password"));
     Promise.all(promiseArray).then(function (result) {
       if ((0, _fp.isEmpty)(result[0]) && (0, _fp.isEmpty)(result[1])) {
-        return res.send({
+        return res.json({
           status: 3,
           message: 'Authentication failed. User not found.'
         });
@@ -83,13 +83,14 @@ var authApi = (0, _resourceRouterMiddleware2.default)({
           result.refreshTokens.push(refreshToken);
           return result.save(function (err) {
             if (err) {
-              res.json({ success: false, message: err.toString });
+              res.json({ status: -1, message: err });
             } else {
               res.json({
-                success: true,
+                status: 0,
                 message: 'Authentication successfull',
                 data: {
                   userType: userType,
+                  uId: result._id,
                   authToken: authToken,
                   expiresIn: _config2.default.authTokenExpiresIn,
                   refreshToken: refreshToken
@@ -100,8 +101,8 @@ var authApi = (0, _resourceRouterMiddleware2.default)({
           });
         }
 
-        res.status(401).send({
-          success: false,
+        res.json({
+          status: 4,
           message: 'Authentication failed. Passwords did not match.'
         });
       });

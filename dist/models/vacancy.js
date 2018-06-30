@@ -18,10 +18,10 @@ var Schema = _mongoose2.default.Schema;
 
 var vacancySchema = new _mongoose2.default.Schema({
   name: { type: String, required: true },
-  created_at: { type: Date, default: new Date() },
+  created_at: { type: Number, default: Math.floor(Date.now() / 1000) },
   avatar: { type: String, default: "" },
   description: { type: String, default: "" },
-  employerId: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
+  ownerId: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
   requiredSkills: { type: [String], default: [] }
 }, {
   versionKey: false

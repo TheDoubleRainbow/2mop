@@ -38,7 +38,7 @@ router.get('/:userId', ({ params: { userId } }, req) => {
 			data: result,
 		}))
 		.catch(error => res.json({
-			status: -1,
+			status: 6,
 			message: "",
 			devMessage: "User not found",
 		}))
@@ -59,7 +59,7 @@ router.put('/:userId', requireAuth, ({ params: { userId }, body, user }, res) =>
 			}));
 	} else {
 		res.json({
-			status: -1,
+			status: 7,
 			message: "",
 			devMessage: "You don't have permissions",
 		})
@@ -81,7 +81,7 @@ router.delete('/:userId', requireAuth, ({ params: { userId }, body, user }, res)
 			}));
 	} else {
 		res.json({
-			status: -1,
+			status: 7,
 			message: "",
 			devMessage: "You don't have permissions to do it",
 		})

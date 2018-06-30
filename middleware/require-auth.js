@@ -12,7 +12,7 @@ export default (req, res, next) => {
         if (err) { return next(err); }
         if (!user) {
             res.json({
-                status: 2,
+                status: 5,
                 message: "",
                 devMessage: info.message
             })

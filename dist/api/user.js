@@ -69,7 +69,7 @@ router.get('/:userId', function (_ref2, req) {
 		});
 	}).catch(function (error) {
 		return res.json({
-			status: -1,
+			status: 6,
 			message: "",
 			devMessage: "User not found"
 		});
@@ -97,7 +97,7 @@ router.put('/:userId', _requireAuth2.default, function (_ref3, res) {
 		});
 	} else {
 		res.json({
-			status: -1,
+			status: 7,
 			message: "",
 			devMessage: "You don't have permissions"
 		});
@@ -125,7 +125,7 @@ router.delete('/:userId', _requireAuth2.default, function (_ref4, res) {
 		});
 	} else {
 		res.json({
-			status: -1,
+			status: 7,
 			message: "",
 			devMessage: "You don't have permissions to do it"
 		});

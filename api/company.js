@@ -38,7 +38,7 @@ router.get('/:companyId', ({ params: { companyId } }, req) => {
 			data: result,
 		}))
 		.catch(error => res.json({
-			status: -1,
+			status: 8,
 			message: "",
 			devMessage: "Company not found",
 		}))
@@ -59,7 +59,7 @@ router.put('/:companyId', requireAuth, ({ params: { companyId }, body, company }
 			}));
 	} else {
 		res.json({
-			status: -1,
+			status: 7,
 			message: "",
 			devMessage: "You don't have permissions",
 		})
@@ -81,7 +81,7 @@ router.delete('/:companyId', requireAuth, ({ params: { companyId }, body, compan
 			}));
 	} else {
 		res.json({
-			status: -1,
+			status: 7,
 			message: "",
 			devMessage: "You don't have permissions to do it",
 		})
