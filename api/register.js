@@ -27,7 +27,7 @@ const userApi = resource({
 				break;
 			default:
 				res.json({
-					status: -1,
+					status: 1,
 					message: "",
 					devMessage: "Invalid or missing type"
 				});

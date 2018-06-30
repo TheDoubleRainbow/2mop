@@ -51,7 +51,7 @@ var userApi = (0, _resourceRouterMiddleware2.default)({
 				break;
 			default:
 				res.json({
-					status: -1,
+					status: 1,
 					message: "",
 					devMessage: "Invalid or missing type"
 				});
