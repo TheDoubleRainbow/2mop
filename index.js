@@ -18,7 +18,7 @@ const root = path.join(__dirname, '..', 'client', 'dist');
 app.server = http.createServer(app);
 
 app.use(express.static(root));
-app.use(fallback('index.html', { root }))
+//app.use(fallback('index.html', { root }))
 
 app.use(morgan('dev'));
 //app.use(cors({ exposedHeaders: config.corsHeaders }));

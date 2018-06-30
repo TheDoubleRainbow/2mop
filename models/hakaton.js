@@ -17,13 +17,7 @@ const hakatonSchema = new mongoose.Schema({
     from: { type: Number, required: true },
     to: { type: Number, required: true },
   },
-  types: { 
-    type: [{
-      key: { type: String },
-      val: { type: String }
-    }],
-    default: []    
-  },
+  types: { type: [String], default: [] },
 }, {
   versionKey: false
 });
