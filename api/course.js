@@ -1,17 +1,16 @@
-import HakatonModel from '../models/hakaton';
+import CourseModel from '../models/course';
 import ApplyModel from '../models/apply';
 import requireAuth from '../middleware/require-auth';
 import express from 'express';
-//import hakatonModel from '../models/hakaton';
+//import courseModel from '../models/course';
 const router = express.Router();
 
 router.get('/', ({query}, res) => {
-	//HakatonModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
+	//CourseModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
 	const page = parseInt(query.page || 0);
     const perPage = parseInt(query.perPage || 20);
     const owner = query.owner; 
-	HakatonModel.paginate(owner ? {owner} : {}, {offset: page * perPage , limit: perPage})
-        
+	CourseModel.paginate(owner ? {owner} : {}, {offset: page * perPage , limit: perPage})
         
         .then(result => res.json({
 			status: 0,
@@ -31,8 +30,8 @@ router.get('/', ({query}, res) => {
 		}))
 });
 
-router.get('/:hakatonId', ({ params: { hakatonId } }, res) => {
-	HakatonModel.findById(hakatonId)
+router.get('/:courseId', ({ params: { courseId } }, res) => {
+	CourseModel.findById(courseId)
 		.then(result => res.json({
 			status: 0,
 			message: "",
@@ -42,19 +41,19 @@ router.get('/:hakatonId', ({ params: { hakatonId } }, res) => {
 		.catch(error => res.json({
 			status: -1,
 			message: "",
-			devMessage: "Hakaton not found",
+			devMessage: "Course not found",
 		}))
 });
 
 router.post('/', requireAuth, ({body, user}, res) => {
 	if(user.type == "company"){
-		const hakaton = new HakatonModel({name: body.name, photo: body.photo, description: body.description, ownerId: user._id, location: {placeId: body.placeId, formattedAddress: body.formattedAddress || 'City name'}, date: body.date});
-		hakaton.save()			
+		const course = new CourseModel({name: body.name, photo: body.photo, description: body.description, ownerId: user._id, location: {placeId: body.placeId, formattedAddress: body.formattedAddress || 'City name'}, date: body.date});
+		course.save()			
 			.then( () => {
 				res.json({
 					status: 0,
-					message: 'Hakaton successfull created',
-					data: hakaton,
+					message: 'Course successfull created',
+					data: course,
 				})
 			})
 			.catch(error => {
@@ -74,16 +73,16 @@ router.post('/', requireAuth, ({body, user}, res) => {
 	}
 });
 
-router.post('/:hakatonId/apply', requireAuth, ({ params: { hakatonId }, user }, res) => {
+router.post('/:courseId/apply', requireAuth, ({ params: { courseId }, user }, res) => {
 	if(user.type == "user"){
-		ApplyModel.findOne({applyerId: user._id, eventId: hakatonId}).then( a => {
+		ApplyModel.findOne({applyerId: user._id, eventId: courseId}).then( a => {
 			if(a != null){
 				res.json({
 					status: -1,
 					message: 'You are applyed already',
 				})
 			} else {
-				const apply = new ApplyModel({applyerId: user._id, eventType: "hakaton", eventId: hakatonId});
+				const apply = new ApplyModel({applyerId: user._id, eventType: "course", eventId: courseId});
 				apply.save()			
 				.then( () => {
 					res.json({
@@ -110,10 +109,10 @@ router.post('/:hakatonId/apply', requireAuth, ({ params: { hakatonId }, user }, 
 	}
 });
 
-router.put('/:hakatonId', requireAuth, ({ params: { hakatonId }, body, user }, res) => {
+router.put('/:courseId', requireAuth, ({ params: { courseId }, body, user }, res) => {
 	// let updates = {name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper};
 	// let update = {name: body.name};
-	HakatonModel.findOneAndUpdate({_id: hakatonId, ownerId: user._id}, {name: body.name, photo: body.photo, description: body.description, ownerId: user._id, location: {placeId: body.placeId, formattedAddress: body.formattedAddress || 'City name'}, date: body.date}, {new: true}).then( doc => {
+	CourseModel.findOneAndUpdate({_id: courseId, ownerId: user._id}, {name: body.name, photo: body.photo, description: body.description, ownerId: user._id, location: {placeId: body.placeId, formattedAddress: body.formattedAddress || 'City name'}, date: body.date}, {new: true}).then( doc => {
 		res.json({
 			status: 0,
 			message: "",
@@ -129,22 +128,22 @@ router.put('/:hakatonId', requireAuth, ({ params: { hakatonId }, body, user }, r
 	});
 })
 
-router.delete('/:hakatonId', requireAuth, ({ params: { hakatonId }, user }, res) => {
-//	if(hakatonId == hakaton._id){
-		//HakatonModel.findByIdAndRemove(hakatonId)
-		HakatonModel.findOneAndRemove({_id: hakatonId, ownerId: user._id})
+router.delete('/:courseId', requireAuth, ({ params: { courseId }, user }, res) => {
+//	if(courseId == course._id){
+		//CourseModel.findByIdAndRemove(courseId)
+		CourseModel.findOneAndRemove({_id: courseId, ownerId: user._id})
         .then((result) => {
             if(result == null){
                 res.json({
                     status: 0,
                     message: "",
-                    devMessage: "Invalid hakaton id or you do not have permissions",
+                    devMessage: "Invalid course id or you do not have permissions",
                 })
             } else {
                 res.json({
                     status: 0,
                     message: "",
-                    devMessage: "Hakaton successfuly deleted",
+                    devMessage: "Course successfuly deleted",
                 })
             }
         })

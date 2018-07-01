@@ -3,7 +3,7 @@ import mongoosePaginate from 'mongoose-paginate'
 
 const Schema = mongoose.Schema;
 
-const hakatonSchema = new mongoose.Schema({
+const courseSchema = new mongoose.Schema({
   name: { type: String, required: true },
   created_at: { type: Number, default: Math.floor( Date.now() / 1000) },
   photo: { type: String, default: "" },
@@ -22,8 +22,8 @@ const hakatonSchema = new mongoose.Schema({
   versionKey: false
 });
 
-hakatonSchema.plugin(mongoosePaginate);
+courseSchema.plugin(mongoosePaginate);
 
-const hakatonModel = mongoose.model('Hakaton', hakatonSchema);
+const courseModel = mongoose.model('Course', courseSchema);
 
-export default hakatonModel;
+export default courseModel;

@@ -1,7 +1,7 @@
 import ExcursionModel from '../models/excursion';
 import requireAuth from '../middleware/require-auth';
 import express from 'express';
-import excursionModel from '../models/excursion';
+//import excursionModel from '../models/excursion';
 const router = express.Router();
 
 router.get('/', ({query}, res) => {
@@ -45,7 +45,7 @@ router.get('/:excursionId', ({ params: { excursionId } }, res) => {
 
 router.post('/', requireAuth, ({body, user}, res) => {
 	if(user.type == "company"){
-		const excursion = new excursionModel({name: body.name, photo: body.photo, description: body.description, ownerId: user._id, location:{placeId: body.placeId, formattedAddress: body.formattedAddress || "City name"}, date: body.date});
+		const excursion = new ExcursionModel({name: body.name, photo: body.photo, description: body.description, ownerId: user._id, location:{placeId: body.placeId, formattedAddress: body.formattedAddress || "City name"}, date: body.date});
 		excursion.save()			
 			.then( () => {
 				res.json({

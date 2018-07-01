@@ -1,7 +1,8 @@
 import VacancyModel from '../models/vacancy';
+import ApplyModel from '../models/apply';
 import requireAuth from '../middleware/require-auth';
 import express from 'express';
-import vacancyModel from '../models/vacancy';
+//import vacancyModel from '../models/vacancy';
 const router = express.Router();
 
 router.get('/', ({query}, res) => {
@@ -10,17 +11,34 @@ router.get('/', ({query}, res) => {
     const perPage = parseInt(query.perPage || 20);
     const ownerId = query.ownerId; 
 	VacancyModel.paginate(ownerId ? {ownerId} : {}, {offset: page * perPage , limit: perPage})
-		.then(result => res.json({
-			status: 0,
-			message: "",
-			devMessage: "",
-			data: result.docs,
-			metaData: {
-				totalPages: result.total % perPage == 0 ? result.total / perPage : parseInt(result.total / perPage) + 1,
-				perPage: perPage,
-				currentPage: page		
-			}
-		}))
+		.then(result => {
+			let docs = result.docs
+			let docsPromiseArr = [];
+			docs.forEach(doc => {
+				docsPromiseArr.push(new Promise((resolve, reject) => {
+					let newDoc = doc._doc;
+					console.log(doc._id);
+					ApplyModel.count({eventId: String(doc._id)}).then(r => {
+						newDoc.applyCount = r;
+						resolve(newDoc);
+					})
+				}))
+			});
+			Promise.all(docsPromiseArr).then(r => {
+
+				res.json({
+					status: 0,
+					message: "",
+					devMessage: "",
+					data: r,
+					metaData: {
+						totalPages: result.total % perPage == 0 ? result.total / perPage : parseInt(result.total / perPage) + 1,
+						perPage: perPage,
+						currentPage: page		
+					}
+				})
+			})
+		})
 		.catch(error => res.json({
 			status: -1,
 			message: "",
@@ -28,14 +46,27 @@ router.get('/', ({query}, res) => {
 		}))
 });
 
-router.get('/:vacancyId', ({ params: { vacancyId } }, res) => {
+router.get('/:vacancyId', requireAuth, ({ params: { vacancyId }, user }, res) => {
+	//ApplyModel.count({eventId: vacancyId}).then(r => res.json({r})).catch( e => res.json({e}));
+	let promiseArr = [];
+	promiseArr.push(ApplyModel.findOne({applyerId: user._id, eventId: vacancyId}));
+	//console.log("vacancy ", vacancyId)
+	promiseArr.push(ApplyModel.count({eventId: vacancyId}));
 	VacancyModel.findById(vacancyId)
-		.then(result => res.json({
-			status: 0,
-			message: "",
-			devMessage: "",
-			data: result,
-		}))
+		.then(result => {
+			Promise.all(promiseArr).then( r => {
+				//let vacancy = Object.assign({}, result)._doc;
+				let vacancy = result._doc;
+				vacancy.applyCount = r[1];
+				vacancy.isUserApplyed = r[0] == null ? false : true;
+				res.json({
+					status: 0,
+					message: "",
+					devMessage: r,
+					data: vacancy,
+				})
+			});
+		})
 		.catch(error => res.json({
 			status: -1,
 			message: "",
@@ -45,7 +76,7 @@ router.get('/:vacancyId', ({ params: { vacancyId } }, res) => {
 
 router.post('/', requireAuth, ({body, user}, res) => {
 	if(user.type == "company"){
-		const vacancy = new vacancyModel({name: body.name, photo: body.photo, description: body.description, ownerId: user._id, requiredSkills: body.requiredSkills, location: {placeId: body.placeId, formattedAddress: body.formattedAddress || "City Name"}, types: body.types});
+		const vacancy = new VacancyModel({name: body.name, photo: body.photo, description: body.description, ownerId: user._id, requiredSkills: body.requiredSkills, location: {placeId: body.placeId, formattedAddress: body.formattedAddress || "City Name"}, types: body.types});
 		vacancy.save()			
 			.then( () => {
 				res.json({
@@ -62,6 +93,42 @@ router.post('/', requireAuth, ({body, user}, res) => {
 					devMessage: error.message,
 				})
 			})
+	} else {
+		res.json({
+			status: 7,
+			message: "",
+			devMessage: "You don't have permissions to do it",
+		})
+	}
+});
+
+router.post('/:vacancyId/apply', requireAuth, ({ params: { vacancyId }, user }, res) => {
+	if(user.type == "user"){
+		ApplyModel.findOne({applyerId: user._id, eventId: vacancyId}).then( a => {
+			if(a != null){
+				res.json({
+					status: -1,
+					message: 'You are applyed already',
+				})
+			} else {
+				const apply = new ApplyModel({applyerId: user._id, eventType: "vacancy", eventId: vacancyId});
+				apply.save()			
+				.then( () => {
+					res.json({
+						status: 0,
+						message: 'Apply successfull created',
+					})
+				})
+				.catch(error => {
+					res.json({
+						status: error.code || -1,
+						message: "",
+						//devMessage: resMessage(error.message)
+						devMessage: error.message,
+					})
+				})
+			}
+		});
 	} else {
 		res.json({
 			status: 7,
