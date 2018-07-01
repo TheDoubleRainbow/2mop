@@ -10,7 +10,8 @@ router.get('/', ({query}, res) => {
 	//UserModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
 	const page = parseInt(query.page || 0);
 	const perPage = parseInt(query.perPage || 20);
-	UserModel.paginate({}, {offset: page * perPage , limit: perPage})
+	const skill = query.skill;
+	UserModel.paginate(skill ? {skills: {"$in": [skill]}} : {}, {offset: page * perPage , limit: perPage})
 		.then(result => res.send({
 			status: 0,
 			message: "",

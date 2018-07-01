@@ -36,7 +36,8 @@ router.get('/', function (_ref, res) {
 	//UserModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
 	var page = parseInt(query.page || 0);
 	var perPage = parseInt(query.perPage || 20);
-	_user2.default.paginate({}, { offset: page * perPage, limit: perPage }).then(function (result) {
+	var skill = query.skill;
+	_user2.default.paginate(skill ? { skills: { "$in": [skill] } } : {}, { offset: page * perPage, limit: perPage }).then(function (result) {
 		return res.send({
 			status: 0,
 			message: "",
