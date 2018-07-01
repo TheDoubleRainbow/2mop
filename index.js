@@ -10,12 +10,15 @@ import api from './api';
 import config from './config';
 import initializeDb from './db';
 import passportMiddleware from './middleware/passport';
+import fallback from 'express-history-api-fallback'
 
 const app = express();
+const root = path.join(__dirname, '..', 'client', 'dist');
 
 app.server = http.createServer(app);
 
-app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
+app.use(express.static(root));
+//app.use(fallback('index.html', { root }))
 
 app.use(morgan('dev'));
 //app.use(cors({ exposedHeaders: config.corsHeaders }));

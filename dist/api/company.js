@@ -57,7 +57,7 @@ router.get('/', _requireAuth2.default, function (_ref, res) {
 	});
 });
 
-router.get('/:companyId', function (_ref2, req) {
+router.get('/:companyId', function (_ref2, res) {
 	var companyId = _ref2.params.companyId;
 
 	_company2.default.findById(companyId).then(function (result) {

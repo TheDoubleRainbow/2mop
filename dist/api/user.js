@@ -57,7 +57,7 @@ router.get('/', function (_ref, res) {
 	});
 });
 
-router.get('/:userId', function (_ref2, req) {
+router.get('/:userId', function (_ref2, res) {
 	var userId = _ref2.params.userId;
 
 	_user2.default.findById(userId).then(function (result) {
@@ -82,7 +82,7 @@ router.put('/:userId', _requireAuth2.default, function (_ref3, res) {
 	    user = _ref3.user;
 
 	if (userId == user._id) {
-		_user2.default.findByIdAndUpdate(userId, { name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper }).then(function () {
+		_user2.default.findByIdAndUpdate(userId, { name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper, desiredWork: body.desiredWork, portfolio: body.portfolio }).then(function () {
 			return res.json({
 				status: 0,
 				message: "",

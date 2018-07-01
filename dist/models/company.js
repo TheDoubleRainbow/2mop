@@ -28,7 +28,10 @@ var companySchema = new _mongoose2.default.Schema({
   phoneNumber: { type: String, default: "" },
   webSite: { type: String, default: "" },
   //location: { type: String, required: true },
-  officesPlaceId: { type: [String], default: [] },
+  officesPlaceId: { type: [{
+      placeId: { type: String, required: true },
+      formattedAddress: { type: String, required: true }
+    }], default: [] },
   authTokens: { type: [String], default: [], select: false },
   refreshTokens: { type: [String], default: [], select: false }
   //type: { type: String, required: true },

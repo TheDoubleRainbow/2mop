@@ -8,8 +8,8 @@ router.get('/', ({query}, res) => {
 	//HakatonModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
 	const page = parseInt(query.page || 0);
     const perPage = parseInt(query.perPage || 20);
-    const organizer = query.organizer; 
-	HakatonModel.paginate(organizer ? {organizer} : {}, {offset: page * perPage , limit: perPage})
+    const owner = query.owner; 
+	HakatonModel.paginate(owner ? {owner} : {}, {offset: page * perPage , limit: perPage})
 		.then(result => res.json({
 			status: 0,
 			message: "",
@@ -45,7 +45,7 @@ router.get('/:hakatonId', ({ params: { hakatonId } }, res) => {
 
 router.post('/', requireAuth, ({body, user}, res) => {
 	if(user.type == "company"){
-		const hakaton = new hakatonModel({name: body.name, avatar: body.avatar, description: body.description, organizerId: user._id, requiredSkills: body.requiredSkills});
+		const hakaton = new hakatonModel({name: body.name, photo: body.photo, description: body.description, ownerId: user._id, location: {placeId: body.placeId, formattedAddress: body.formattedAddress || 'City name'}, date: body.date});
 		hakaton.save()			
 			.then( () => {
 				res.json({
@@ -64,7 +64,7 @@ router.post('/', requireAuth, ({body, user}, res) => {
 			})
 	} else {
 		res.json({
-			status: -1,
+			status: 7,
 			message: "",
 			devMessage: "You don't have permissions to do it",
 		})
@@ -74,7 +74,7 @@ router.post('/', requireAuth, ({body, user}, res) => {
 router.put('/:hakatonId', requireAuth, ({ params: { hakatonId }, body, user }, res) => {
 	// let updates = {name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper};
 	// let update = {name: body.name};
-	HakatonModel.findOneAndUpdate({_id: hakatonId, organizerId: user._id}, body, {new: true}).then( doc => {
+	HakatonModel.findOneAndUpdate({_id: hakatonId, ownerId: user._id}, {name: body.name, photo: body.photo, description: body.description, ownerId: user._id, location: {placeId: body.placeId, formattedAddress: body.formattedAddress || 'City name'}, date: body.date}, {new: true}).then( doc => {
 		res.json({
 			status: 0,
 			message: "",
@@ -93,12 +93,22 @@ router.put('/:hakatonId', requireAuth, ({ params: { hakatonId }, body, user }, r
 router.delete('/:hakatonId', requireAuth, ({ params: { hakatonId }, user }, res) => {
 //	if(hakatonId == hakaton._id){
 		//HakatonModel.findByIdAndRemove(hakatonId)
-		HakatonModel.findOneAndRemove({_id: hakatonId, organizerId: user._id})
-			.then(() => res.json({
-				status: 0,
-				message: "",
-				devMessage: "Hakaton successfuly deleted",
-			}))
+		HakatonModel.findOneAndRemove({_id: hakatonId, ownerId: user._id})
+        .then((result) => {
+            if(result == null){
+                res.json({
+                    status: 0,
+                    message: "",
+                    devMessage: "Invalid hakaton id or you do not have permissions",
+                })
+            } else {
+                res.json({
+                    status: 0,
+                    message: "",
+                    devMessage: "Hakaton successfuly deleted",
+                })
+            }
+        })
 			.catch((err) => res.json({
 				status: -1,
 				message: "",

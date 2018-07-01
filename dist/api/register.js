@@ -42,6 +42,15 @@ var userApi = (0, _resourceRouterMiddleware2.default)({
 
 		var userData = body.userData;
 
+		if (!userData) {
+			res.json({
+				status: -1,
+				message: "",
+				devMessage: "Invalid user data"
+			});
+			return;
+		}
+
 		switch (body.type) {
 			case 'user':
 				user = new _user2.default({ name: userData.name, email: userData.email, password: userData.password });
@@ -51,7 +60,7 @@ var userApi = (0, _resourceRouterMiddleware2.default)({
 				break;
 			default:
 				res.json({
-					status: -1,
+					status: 1,
 					message: "",
 					devMessage: "Invalid or missing type"
 				});
