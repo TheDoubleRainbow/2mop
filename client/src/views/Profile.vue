@@ -1,10 +1,10 @@
 <template>
     <div class="container">
-        <div class="columns is-centered ">
+        <div v-if="loaded" class="columns is-centered ">
             <div class="column is-8">
                 <div class="card profileCard columns is-centered">
                     <div class="column is-3 portfolioDataImage">
-                        <img class="profilePic card" src="./../assets/topnep.jpg" />
+                        <img class="profilePic card" :src="userData.avatar ? userData.avatar : 'http://bokunozibra.herokuapp.com/img/topnep.0e75caa0.jpg'" />
                     </div>
                     <div class="column is-8 portfolioDataText">
                         <div class="profileName">
@@ -13,36 +13,34 @@
                         <div class="columns">
                             <div class="column is-5 profileContactFist">
                                 <div class="ContactElement">
-                                    <span class="icon"><i class="fas fa-map-marker-alt"></i></span> {{userData.location.formattedAddress}}
+                                    <span class="icon"><i class="fas fa-map-marker-alt"></i></span> {{userData.location.formattedAddress ? userData.location.formattedAddress : 'None'}}
                                 </div>
                                 <div class="ContactElement">
-                                    <span class="icon"><i class="fas fa-mobile"></i></span> {{userData.phoneNumber}}
+                                    <span class="icon"><i class="fas fa-mobile"></i></span> {{userData.phoneNumber ? userData.phoneNumber : 'None'}}
                                 </div>
                             </div>
                             <div class="column is-7 profileContactSecond">
                                 <div class="ContactElement">
-                                    <span class="icon"><i class="fas fa-briefcase"></i></span> {{userData.profession}}
+                                    <span class="icon"><i class="fas fa-briefcase"></i></span> {{userData.profession ? userData.profession : 'None'}}
                                 </div>
                                 <div class="ContactElement">
-                                    <span class="icon"><i class="fas fa-envelope"></i></span> {{userData.email}}
+                                    <span class="icon"><i class="fas fa-envelope"></i></span> {{userData.email ? userData.email : 'None'}}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card columns is-centered profileCard">
+                <div v-if="userData.description" class="card columns is-centered profileCard">
                     <div class="column is-12">
                         <div class="cardHeader">Description</div>
-                        <div class="cardDescription">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed a erat lacinia, dignissim arcu a, commodo ante. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec quis nibh ac odio vehicula feugiat nec quis magna. Ut et condimentum quam, id facilisis diam. Integer sagittis tempus massa, vel venenatis tortor tincidunt ac. Cras vitae magna placerat, sagittis erat et, consequat massa. Duis ipsum nulla, vestibulum ac urna in, malesuada condimentum nibh.
-
-Quisque ac sollicitudin massa. Mauris dignissim eu sem et lacinia. Donec suscipit leo neque, ac porttitor libero sollicitudin a. Donec eget ipsum odio. Nunc interdum massa augue, quis pharetra est varius iaculis. Suspendisse et vehicula diam. Ut sed consequat neque, vel gravida eros. Maecenas a cursus urna. Suspendisse facilisis blandit.</div>
+                        <div class="cardDescription">{{userData.description}}</div>
                     </div>
                 </div>
                 <div v-if="userData.skills.length > 0 || userData.portfolio.length > 0" class="card columns is-centered profileCard">
                     <div v-if="userData.skills.length > 0" class="column is-6 skills">
-                        <div class="cardHeader">Skills</div>
+                        <div class="cardHeader skillHeader">Skills</div>
                         <div class="cardSkillsList">
-                            <span class="tag is-light" v-for="(skill, i) in userData.skills" :key="i">{{skill}}</span>
+                            <span class="card tag is-light skillTag" v-for="(skill, i) in userData.skills" :key="i">{{skill}}</span>
                         </div>
                     </div>
                     <div v-if="userData.portfolio.length > 0" class="column is-6 portfolio">
@@ -58,6 +56,10 @@ Quisque ac sollicitudin massa. Mauris dignissim eu sem et lacinia. Donec suscipi
 </template>
 
 <style>
+.skillTag{
+    margin-left: 20px;
+    margin-top: 10px;
+}
 .cardDescription{
     text-align: left;
     padding: 10px;
@@ -102,13 +104,18 @@ Quisque ac sollicitudin massa. Mauris dignissim eu sem et lacinia. Donec suscipi
     margin-top: 20px;
     margin-bottom: 20px;
 }
+.skillHeader{
+    margin: 0;
+}
 </style>
 
 <script>
 export default {
     name: 'profile',
     data: function(){
-       return{ userData: {
+       return{ 
+           loaded: false,
+           userData: {
             name: {
                 first: 'Neptunia',
                 last: 'Neptunen-ko'
@@ -121,12 +128,30 @@ export default {
                 },
             birthDay: '22.08.1488',
             phoneNumber: '+380228133788',
+            description: '',
             email: 'neppunep@cyberdiment.mail',
-            skills: ['Paladin', 'Pro nepper', 'Nep nep'],
+            skills: ['Paladin', 'Pro nepper', 'Nep nep', 'skill', 'just another skill in the wall', 'pro sgo player'],
             portfolio: [{name: 'paladin 85lvl in nep 4 online', link: 'http://neptunia.jp'},
             {name: 'NepgearFanPage', link: 'http://nep.jp'}]
         }
        }
+    },
+    methods: {
+        getData: function(){
+            fetch(`https://bokunozibra.herokuapp.com/api/user/${this.$store.state.auth.uId}`).then(res=>{
+                return res.json()
+            }).then(res=>{
+                if(res.status === 0){
+                    this.userData = res.data;
+                    this.loaded = true;
+                }else{
+                    console.log(res)
+                }
+            })
+        }
+    },
+    created: function(){
+        this.getData()
     }
 
 }

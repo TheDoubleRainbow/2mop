@@ -2,7 +2,7 @@
     <div class="container">
         <div class="columns is-centered">
         <div class="column is-8">
-            <Card type="excursion" :data="excursion" v-for="excursion in data" v-bind:key="excursion._id" />
+            <Card type="course" :data="course" v-for="course in data" v-bind:key="course._id" />
         </div>
         </div>
     </div>
@@ -11,7 +11,7 @@
 <script>
 import Card from './../components/Card/Card'
 export default {
-    name: 'excursions',
+    name: 'hackathons',
     components: {
         Card
     },
@@ -21,7 +21,7 @@ export default {
         }
     },
     created: function(){
-        fetch(`https://bokunozibra.herokuapp.com/api/excursion/?page=0&perPage=200`, {headers: {'Authorization': this.$store.state.auth.authToken,'content-type': 'application/json'}}).then(res=>{
+        fetch(`https://bokunozibra.herokuapp.com/api/course/?page=0&perPage=200`, {headers: {'Authorization': this.$store.state.auth.authToken,'content-type': 'application/json'}}).then(res=>{
             return res.json()
         }).then(res=>{
             this.data = res.data;

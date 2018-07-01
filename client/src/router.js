@@ -3,9 +3,12 @@ import Router from 'vue-router'
 import Jobs from './views/Jobs.vue'
 import Hackathons from './views/Hackathons'
 import Excursions from './views/Excursions'
+import Courses from './views/Courses'
 import Login from './views/Login.vue'
 import PNF from './views/PNF.vue'
 import Profile from './views/Profile.vue'
+import fullCard from './views/fullCard.vue'
+import Add from './views/Add.vue'
 
 import store from './store';
 
@@ -23,6 +26,14 @@ const isAuth = function(to, from, next){
     }
   }
   next('/login')
+}
+
+const isCompany = function(to, from, next){
+  if(store.state.auth.userType === 'company' ){
+    next()
+    return
+  }
+  next('/404')
 }
 
 const isNotAuth = function(to, from, next){
@@ -60,6 +71,18 @@ export default new Router({
       beforeEnter: isAuth
     },
     {
+      path: '/courses',
+      name: 'courses',
+      component: Courses,
+      beforeEnter: isAuth
+    },
+    {
+      path: '/fullCard/:type/:id',
+      name: 'fullCard',
+      component: fullCard,
+      beforeEnter: isAuth
+    },
+    {
       path: '/login',
       name: 'login',
       component: Login,
@@ -82,6 +105,12 @@ export default new Router({
       name: 'profile',
       component: Profile,
       beforeEnter: isAuth
+    },
+    {
+      path: '/add',
+      name: 'add',
+      component: Add,
+      beforeEnter: isCompany
     },
     {
       path: '**',

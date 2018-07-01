@@ -59,13 +59,6 @@ export default new Vuex.Store({
           router.push('login')
         }
       })
-    },
-    getJobs(state){
-      fetch('https://bokunozibra.herokuapp.com/api/jobs', {headers: {'token':'application/json'}, method: 'GET'}).then(res=>{
-        return res.json()
-      }).then(res => {
-        state.jobs = res;
-      })
     }
   },
   actions: {
