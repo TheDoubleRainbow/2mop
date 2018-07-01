@@ -36,8 +36,19 @@ router.get('/', function (_ref, res) {
 	//UserModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
 	var page = parseInt(query.page || 0);
 	var perPage = parseInt(query.perPage || 20);
+	var que = {};
 	var skill = query.skill;
-	_user2.default.paginate(skill ? { skills: { "$in": [skill] } } : {}, { offset: page * perPage, limit: perPage }).then(function (result) {
+	var address = query.city;
+	if (skill) {
+		que.skills = { "$in": [new RegExp(skill, "i")] };
+	}
+	if (address) {
+		que.location = {};
+		que.location.formattedAddress = new RegExp(address, "i");
+		//que.location.formattedAddress = address;
+	}
+
+	_user2.default.paginate(que, { offset: page * perPage, limit: perPage }).then(function (result) {
 		return res.send({
 			status: 0,
 			message: "",

@@ -10,8 +10,19 @@ router.get('/', ({query}, res) => {
 	//UserModel.find({}, {auth_tokens: 0, refresh_tokens: 0}).
 	const page = parseInt(query.page || 0);
 	const perPage = parseInt(query.perPage || 20);
+	let que = {};
 	const skill = query.skill;
-	UserModel.paginate(skill ? {skills: {"$in": [skill]}} : {}, {offset: page * perPage , limit: perPage})
+	const address = query.city
+	if(skill){
+		que.skills = {"$in": [new RegExp(skill, "i")]}
+	}
+	if(address){
+		que.location = {};
+		que.location.formattedAddress = new RegExp(address, "i");
+		//que.location.formattedAddress = address;
+	}
+
+	UserModel.paginate(que, {offset: page * perPage , limit: perPage})
 		.then(result => res.send({
 			status: 0,
 			message: "",
