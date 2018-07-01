@@ -18,6 +18,7 @@ var _express2 = _interopRequireDefault(_express);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//import excursionModel from '../models/excursion';
 var router = _express2.default.Router();
 
 router.get('/', function (_ref, res) {

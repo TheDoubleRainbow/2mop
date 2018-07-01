@@ -10,6 +10,7 @@ import registerApi from './register';
 import vacancyApi from './vacancy';
 import excursionApi from './excursion';
 import hakatonApi from './hakaton';
+import courseApi from './course';
 //import cors from 'cors';
 
 const api = Router();
@@ -24,6 +25,7 @@ api.use('/token', tokenApi);
 api.use('/vacancy', vacancyApi);
 api.use('/excursion', excursionApi);
 api.use('/hakaton', hakatonApi);
+api.use('/course', courseApi);
 
 api.get('/', (req, res) => {
 	res.json({ version });
