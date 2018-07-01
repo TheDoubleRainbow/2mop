@@ -1,7 +1,7 @@
 <template>
     <div class="columns is-12 card cardFull mainCard" @click="$router.push(`/fullCard/${type}/${data._id}`)">
         <div class="column is-4 cardLeft">
-            <div class="column is-12 cardImageWrap"><img class="card cardImage" :src="data.photo ? data.photo : 'http://bokunozibra.herokuapp.com/img/topnep.0e75caa0.jpg'" /></div>
+            <div class="card  cardImageWrap"><img class=" cardImage" :src="data.photo ? data.photo : 'http://bokunozibra.herokuapp.com/placeh.png'" /></div>
             <div class="column is-12 cardDetailsWrap">
                 <div v-if="data.date" class="cardDetail">{{data.date.from | formatDate}}</div>
                 <div v-if="data.location" class="cardDetail">{{data.location.formattedAddress}}</div>
@@ -76,6 +76,12 @@ export default {
 
 .cardImage{
     border-radius: 100%;
+}
+.cardImageWrap{
+    height: 80px;
+    width: 80px;
+    border-radius: 100%;
+    margin: 0 auto;
 }
 </style>
 

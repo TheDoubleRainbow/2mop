@@ -4,7 +4,7 @@
             <div class="column is-8">
                 <div class="card profileCard columns is-centered">
                     <div class="column is-3 portfolioDataImage">
-                        <img class="profilePic card" :src="userData.avatar ? userData.avatar : 'http://bokunozibra.herokuapp.com/img/topnep.0e75caa0.jpg'" />
+                        <img class="profilePic card" :src="userData.avatar ? userData.avatar : 'http://bokunozibra.herokuapp.com/userPic.png'" />
                     </div>
                     <div class="column is-8 portfolioDataText">
                         <div class="profileName">
