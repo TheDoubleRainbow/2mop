@@ -59,6 +59,7 @@ export default {
 .cardLeft{
     border-right: 1px solid #999;
     height: 100%;
+    padding-top: 35px;
 }
 .cardFull{
     margin: 1rem;

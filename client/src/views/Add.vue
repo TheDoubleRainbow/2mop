@@ -116,7 +116,9 @@ export default {
         },
         toArray: function(){
             this.data.requiredSkills = this.rawSkills.split(', ')
-            this.data.types = this.rawTypes.split(', ')
+            if(this.rawTypes != ''){
+                this.data.types = this.rawTypes.split(', ')
+            }
         },
         formatDate: function(){
             this.data.date.from = new Date(this.dateRaw.from).getTime()

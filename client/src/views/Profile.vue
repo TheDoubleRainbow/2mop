@@ -12,7 +12,7 @@
                         </div>
                         <div class="columns">
                             <div class="column is-5 profileContactFist">
-                                <div class="ContactElement">
+                                <div v-if="type != 'company'" class="ContactElement">
                                     <span class="icon"><i class="fas fa-map-marker-alt"></i></span> {{userData.location.formattedAddress ? userData.location.formattedAddress : 'None'}}
                                 </div>
                                 <div class="ContactElement">
@@ -20,8 +20,11 @@
                                 </div>
                             </div>
                             <div class="column is-7 profileContactSecond">
-                                <div class="ContactElement">
+                                <div v-if="type != 'company'" class="ContactElement">
                                     <span class="icon"><i class="fas fa-briefcase"></i></span> {{userData.profession ? userData.profession : 'None'}}
+                                </div>
+                                <div v-if="type == 'company'" class="ContactElement">
+                                    <span class="icon"><i class="fas fa-briefcase"></i></span> {{userData.name ? userData.name : 'None'}}
                                 </div>
                                 <div class="ContactElement">
                                     <span class="icon"><i class="fas fa-envelope"></i></span> {{userData.email ? userData.email : 'None'}}
@@ -36,11 +39,11 @@
                         <div class="cardDescription">{{userData.description}}</div>
                     </div>
                 </div>
-                <div v-if="userData.skills.length > 0 || userData.portfolio.length > 0" class="card columns is-centered profileCard">
+                <div v-if="type != 'company' && userData.skills.length > 0 || type != 'company' && userData.portfolio.length > 0" class="card columns is-centered profileCard">
                     <div v-if="userData.skills.length > 0" class="column is-6 skills">
                         <div class="cardHeader skillHeader">Skills</div>
                         <div class="cardSkillsList">
-                            <span class="card tag is-light skillTag" v-for="(skill, i) in userData.skills" :key="i">{{skill}}</span>
+                            <span class="card tag is-light skillTag" v-for="(skill, i) in userData.skills" :key="i">{{skill.type}}</span>
                         </div>
                     </div>
                     <div v-if="userData.portfolio.length > 0" class="column is-6 portfolio">
@@ -115,6 +118,7 @@ export default {
     data: function(){
        return{ 
            loaded: false,
+           type: this.$store.state.auth.userType,
            userData: {
             name: {
                 first: 'Neptunia',
@@ -138,7 +142,7 @@ export default {
     },
     methods: {
         getData: function(){
-            fetch(`https://bokunozibra.herokuapp.com/api/user/${this.$store.state.auth.uId}`).then(res=>{
+            fetch(`https://bokunozibra.herokuapp.com/api/${this.type}/${this.$store.state.auth.uId}`).then(res=>{
                 return res.json()
             }).then(res=>{
                 if(res.status === 0){

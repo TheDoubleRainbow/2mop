@@ -38,14 +38,17 @@
                 </div>
             </div>
         </div>
-        <div v-if="data && data.date" class="columns is-centered">
+        <div class="columns is-centered">
             <div class="column is-8">
-                <div class="card columns is-centered fullCardDesc footerCard">
-                        <div class="column is-6 paddingzero">
+                <div class="card columns is-centered fullCardDesc footerCard applyCard">
+                        <div v-if="data && data.date" class="column is-5 paddingzero">
                             <div class="cardDescription footerCard"> <span class="icon"><i class="fas fa-calendar-alt"></i></span> From {{data.date.from | formatDate}}</div>
                         </div>
-                        <div class="column is-6 paddingzero">
+                        <div v-if="data && data.date" class="column is-5 paddingzero">
                             <div class="cardDescription footerCard"> <span class="icon"><i class="fas fa-calendar-alt"></i></span> To {{data.date.to | formatDate}}</div>
+                        </div>
+                        <div class="column is-2 paddingzero">
+                            <button class="button is-primary apply">Apply</button>
                         </div>
                 </div>
             </div>
@@ -80,12 +83,12 @@ export default {
         this.type = this.$route.params.type;
         this.id = this.$route.params.id;
 
-        fetch(`https://bokunozibra.herokuapp.com/api/${this.type}/${this.id}`).then(res=>{
+        fetch(`https://bokunozibra.herokuapp.com/api/${this.type}/${this.id}`, {headers: {'Authorization': this.$store.state.auth.authToken,'content-type': 'application/json'}}).then(res=>{
             return res.json()
         }).then(res => {
             if(res.status === 0){
                 this.data = res.data;
-                fetch(`http://bokunozibra.herokuapp.com/api/company/${this.data.ownerId}`).then(res=>{
+                fetch(`http://bokunozibra.herokuapp.com/api/company/${this.data.ownerId}`, {headers: {'Authorization': this.$store.state.auth.authToken,'content-type': 'application/json'}}).then(res=>{
                     return res.json()
                 }).then(res => {
                     if(res.status === 0){
@@ -114,6 +117,13 @@ export default {
 </script>
 
 <style scoped>
+.applyCard{
+    min-height: 42px;
+}
+.apply{
+    position: relative;
+    top: 3px;
+}
 .fullCardDesc{
     margin-top: 10px;
 }
