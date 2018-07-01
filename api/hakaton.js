@@ -110,6 +110,42 @@ router.post('/:hakatonId/apply', requireAuth, ({ params: { hakatonId }, user }, 
 	}
 });
 
+router.post('/:hakatonId/apply', requireAuth, ({ params: { hakatonId }, user }, res) => {
+	if(user.type == "user"){
+		ApplyModel.findOne({applyerId: user._id, eventId: hakatonId}).then( a => {
+			if(a != null){
+				res.json({
+					status: -1,
+					message: 'You are applyed already',
+				})
+			} else {
+				const apply = new ApplyModel({applyerId: user._id, eventType: "hakaton", eventId: hakatonId});
+				apply.save()			
+				.then( () => {
+					res.json({
+						status: 0,
+						message: 'Apply successfull created',
+					})
+				})
+				.catch(error => {
+					res.json({
+						status: error.code || -1,
+						message: "",
+						//devMessage: resMessage(error.message)
+						devMessage: error.message,
+					})
+				})
+			}
+		});
+	} else {
+		res.json({
+			status: 7,
+			message: "",
+			devMessage: "You don't have permissions to do it",
+		})
+	}
+});
+
 router.put('/:hakatonId', requireAuth, ({ params: { hakatonId }, body, user }, res) => {
 	// let updates = {name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper};
 	// let update = {name: body.name};

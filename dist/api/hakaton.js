@@ -138,10 +138,47 @@ router.post('/:hakatonId/apply', _requireAuth2.default, function (_ref4, res) {
 	}
 });
 
-router.put('/:hakatonId', _requireAuth2.default, function (_ref5, res) {
+router.post('/:hakatonId/apply', _requireAuth2.default, function (_ref5, res) {
 	var hakatonId = _ref5.params.hakatonId,
-	    body = _ref5.body,
 	    user = _ref5.user;
+
+	if (user.type == "user") {
+		_apply2.default.findOne({ applyerId: user._id, eventId: hakatonId }).then(function (a) {
+			if (a != null) {
+				res.json({
+					status: -1,
+					message: 'You are applyed already'
+				});
+			} else {
+				var apply = new _apply2.default({ applyerId: user._id, eventType: "hakaton", eventId: hakatonId });
+				apply.save().then(function () {
+					res.json({
+						status: 0,
+						message: 'Apply successfull created'
+					});
+				}).catch(function (error) {
+					res.json({
+						status: error.code || -1,
+						message: "",
+						//devMessage: resMessage(error.message)
+						devMessage: error.message
+					});
+				});
+			}
+		});
+	} else {
+		res.json({
+			status: 7,
+			message: "",
+			devMessage: "You don't have permissions to do it"
+		});
+	}
+});
+
+router.put('/:hakatonId', _requireAuth2.default, function (_ref6, res) {
+	var hakatonId = _ref6.params.hakatonId,
+	    body = _ref6.body,
+	    user = _ref6.user;
 
 	// let updates = {name: body.name, avatar: body.avatar, birthDate: body.birthDate, description: body.description, skills: body.skills, phoneNumper: body.phoneNumper};
 	// let update = {name: body.name};
@@ -161,9 +198,9 @@ router.put('/:hakatonId', _requireAuth2.default, function (_ref5, res) {
 	});
 });
 
-router.delete('/:hakatonId', _requireAuth2.default, function (_ref6, res) {
-	var hakatonId = _ref6.params.hakatonId,
-	    user = _ref6.user;
+router.delete('/:hakatonId', _requireAuth2.default, function (_ref7, res) {
+	var hakatonId = _ref7.params.hakatonId,
+	    user = _ref7.user;
 
 	//	if(hakatonId == hakaton._id){
 	//HakatonModel.findByIdAndRemove(hakatonId)
